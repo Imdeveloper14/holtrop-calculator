@@ -46,41 +46,58 @@ const viscousResistance =
     (1 + ff.k1) *
     friction.Rf;
 const wave =
-    calculateWaveResistance(vessel);
+    holtropWaveResistance(vessel);
+const total =totalResistance(
+        vessel,
+        friction,
+        viscousResistance,
+        wave
+    );
 
 // Display Results
-console.log(document.getElementById("reResult"));
-console.log(document.getElementById("fnResult"));
-console.log(document.getElementById("cfResult"));
-console.log(document.getElementById("rfResult"));
-console.log(document.getElementById("sResult"));
-console.log(document.getElementById("cpResult"));
-console.log(document.getElementById("k1Result"));
-console.log(document.getElementById("rvResult"));
-console.log(document.getElementById("rwResult"));
 
-console.log("Friction:", friction);
-console.log("Wave:", wave);
-console.log("Chart:", typeof Chart);
-console.log("Canvas:", document.getElementById("resistanceChart"));
-console.log("rwResult:", document.getElementById("rwResult"));
+document.getElementById("reResult").textContent =
+    friction.Re.toExponential(3);
 
-console.log("Canvas:", document.getElementById("resistanceChart"));
-console.log("Chart:", typeof Chart);
-console.log("Wave:", wave);
-console.log("Friction:", friction);
-console.log("Rf =", friction.Rf);
-console.log("Viscous =", viscousResistance);
-console.log("Rw =", wave.Rw);
-console.log("Rf =", friction.Rf);
-console.log("Viscous =", viscousResistance);
-console.log("Rw =", wave.Rw);
+document.getElementById("fnResult").textContent =
+    friction.Fn.toFixed(4);
 
-console.log({
-    friction: friction.Rf / 1000,
-    viscous: viscousResistance / 1000,
-    wave: wave.Rw / 1000
-});
+document.getElementById("cfResult").textContent =
+    friction.Cf.toFixed(5);
+
+document.getElementById("rfResult").textContent =
+    (friction.Rf / 1000).toFixed(2);
+
+document.getElementById("sResult").textContent =
+    S.toFixed(2);
+
+document.getElementById("cpResult").textContent =
+    wave.Cp.toFixed(3);
+
+document.getElementById("k1Result").textContent =
+    (1 + ff.k1).toFixed(3);
+
+document.getElementById("rvResult").textContent =
+    (viscousResistance / 1000).toFixed(2);
+
+document.getElementById("rwResult").textContent =
+    (wave.Rw / 1000).toFixed(2);
+
+document.getElementById("raResult").textContent =
+    (total.airResistance / 1000).toFixed(2);
+
+document.getElementById("rappResult").textContent =
+    (total.appendageResistance / 1000).toFixed(2);
+
+document.getElementById("caResult").textContent =
+    (total.correlationAllowance / 1000).toFixed(2);
+
+document.getElementById("rtResult").textContent =
+    (total.Rt / 1000).toFixed(2);
+
+document.getElementById("peResult").textContent =
+    (total.effectivePower / 1000).toFixed(2);
+
 drawResistanceChart(
     friction,
     viscousResistance,
