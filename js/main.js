@@ -1,3 +1,4 @@
+let resistanceChart = null;
 document.addEventListener("DOMContentLoaded",()=>{
 
 document
@@ -39,21 +40,115 @@ const friction = frictionResistance(
     vessel.lwl,
     vessel.speed
 );
+const ff = formFactor(vessel);
+
+const viscousResistance =
+    (1 + ff.k1) *
+    friction.Rf;
+const wave =
+    calculateWaveResistance(vessel);
 
 // Display Results
-document.getElementById("reResult").textContent =
-    friction.Re.toExponential(3);
+console.log(document.getElementById("reResult"));
+console.log(document.getElementById("fnResult"));
+console.log(document.getElementById("cfResult"));
+console.log(document.getElementById("rfResult"));
+console.log(document.getElementById("sResult"));
+console.log(document.getElementById("cpResult"));
+console.log(document.getElementById("k1Result"));
+console.log(document.getElementById("rvResult"));
+console.log(document.getElementById("rwResult"));
 
-document.getElementById("fnResult").textContent =
-    friction.Fn.toFixed(4);
+console.log("Friction:", friction);
+console.log("Wave:", wave);
+console.log("Chart:", typeof Chart);
+console.log("Canvas:", document.getElementById("resistanceChart"));
+console.log("rwResult:", document.getElementById("rwResult"));
 
-document.getElementById("cfResult").textContent =
-    friction.Cf.toFixed(5);
+console.log("Canvas:", document.getElementById("resistanceChart"));
+console.log("Chart:", typeof Chart);
+console.log("Wave:", wave);
+console.log("Friction:", friction);
+console.log("Rf =", friction.Rf);
+console.log("Viscous =", viscousResistance);
+console.log("Rw =", wave.Rw);
+console.log("Rf =", friction.Rf);
+console.log("Viscous =", viscousResistance);
+console.log("Rw =", wave.Rw);
 
-document.getElementById("rfResult").textContent =
-    (friction.Rf / 1000).toFixed(2);
-    
-document.getElementById("sResult").textContent =
-    S.toFixed(2);
+console.log({
+    friction: friction.Rf / 1000,
+    viscous: viscousResistance / 1000,
+    wave: wave.Rw / 1000
+});
+drawResistanceChart(
+    friction,
+    viscousResistance,
+    wave
+);
+}
+function drawResistanceChart(friction, viscous, wave) {
+
+    const ctx = document
+        .getElementById("resistanceChart")
+        .getContext("2d");
+
+    if (resistanceChart) {
+        resistanceChart.destroy();
+    }
+
+    resistanceChart = new Chart(ctx, {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+                "Friction",
+                "Viscous",
+                "Wave"
+            ],
+
+            datasets: [{
+
+                label: "Resistance (kN)",
+                backgroundColor: [
+                        "#2196F3",
+                        "#4CAF50",
+                        "#FF9800"
+                ],
+                data: [
+                    Number(friction.Rf / 1000),
+                    Number(viscous / 1000),
+                    Number(wave.Rw / 1000)
+                ]
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            },
+
+            scales:{
+                y: {
+                    beginAtZero: true
+                }
+            }
+
+        }
+
+    });
 
 }

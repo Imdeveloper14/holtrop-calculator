@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,135 +19,194 @@
 
 <body>
 
-<header>
-    <h1>Holtrop & Mennen Resistance Calculator</h1>
-    <p>Primalisometric Consultancy</p>
-</header>
+    <header>
+        <h1>Holtrop & Mennen Resistance Calculator</h1>
+        <p>Primalisometric Consultancy</p>
+    </header>
 
-<main class="dashboard">
+    <main class="dashboard">
 
-    <aside class="sidebar">
+        <aside class="sidebar">
 
-        <h2>Input Modules</h2>
+            <h2>Input Modules</h2>
 
-        <button>Principal Particulars</button>
-        <button>Hull Geometry</button>
-        <button>Appendages</button>
-        <button>Environment</button>
-        <button>Propulsion</button>
+            <button>Principal Particulars</button>
+            <button>Hull Geometry</button>
+            <button>Appendages</button>
+            <button>Environment</button>
+            <button>Propulsion</button>
 
-        <hr>
+            <hr>
 
-        <button>Calculate Resistance</button>
-        <button>Generate Report</button>
+            <button>Calculate Resistance</button>
+            <button>Generate Report</button>
 
-    </aside>
+        </aside>
 
-    <section class="workspace">
+        <section class="workspace">
 
-       <div class="card">
+            <!-- Principal Particulars -->
 
-            <h2>Principal Particulars</h2>
+            <section id="principalSection">
 
-            <div class="form-grid">
+                <div class="card">
 
-            <label>Length Between Perpendiculars (LPP)</label>
-            <input id="lpp" type="number" step="0.01">
+                    <h2>Principal Particulars</h2>
 
-            <label>Length Waterline (LWL)</label>
-            <input id="lwl" type="number" step="0.01">
+                    <div class="form-grid">
 
-            <label>Beam (B)</label>
-            <input id="beam" type="number" step="0.01">
+                        <label>Length Between Perpendiculars (LPP)</label>
+                        <input id="lpp" type="number" step="0.01">
 
-            <label>Draft (T)</label>
-            <input id="draft" type="number" step="0.01">
+                        <label>Length Waterline (LWL)</label>
+                        <input id="lwl" type="number" step="0.01">
 
-            <label>Displacement (Δ)</label>
-            <input id="disp" type="number" step="0.01">
+                        <label>Beam (B)</label>
+                        <input id="beam" type="number" step="0.01">
 
-            <label>Block Coefficient (Cb)</label>
-            <input id="cb" type="number" step="0.001">
+                        <label>Draft (T)</label>
+                        <input id="draft" type="number" step="0.01">
 
-            <label>Midship Coefficient (Cm)</label>
-            <input id="cm" type="number" step="0.001">
+                        <label>Displacement (Δ)</label>
+                        <input id="disp" type="number" step="0.01">
 
-            <label>Waterplane Coefficient (Cwp)</label>
-            <input id="cwp" type="number" step="0.001">
+                        <label>Block Coefficient (Cb)</label>
+                        <input id="cb" type="number" step="0.001">
 
-            <label>LCB (%LPP from Midship)</label>
-            <input id="lcb" type="number" step="0.01">
+                        <label>Midship Coefficient (Cm)</label>
+                        <input id="cm" type="number" step="0.001">
 
-            <label>Speed (knots)</label>
-            <input id="speed" type="number" step="0.1">
+                        <label>Waterplane Coefficient (Cwp)</label>
+                        <input id="cwp" type="number" step="0.001">
 
-            <button id="calculateBtn">
-            Calculate Resistance
-            </button>
+                        <label>LCB (%LPP from Midship)</label>
+                        <input id="lcb" type="number" step="0.01">
 
-            </div>
+                        <label>Speed (knots)</label>
+                        <input id="speed" type="number" step="0.1">
 
-            </div>
+                        <button id="calculateBtn">
+                            Calculate Resistance
+                        </button>
 
-        <div class="card">
+                    </div>
 
-            <h2>Resistance Summary</h2>
+                </div>
 
-            <table id="resultsTable">
+            </section>
 
-            <tr>
-            <th>Parameter</th>
-            <th>Value</th>
-            </tr>
+            <!-- Results -->
 
-            <tr>
-            <td>Reynolds Number</td>
-            <td id="reResult">-</td>
-            </tr>
+            <section id="resultsSection">
 
-            <tr>
-            <td>Froude Number</td>
-            <td id="fnResult">-</td>
-            </tr>
+                <div class="card">
 
-            <tr>
-            <td>ITTC Friction Coefficient (Cf)</td>
-            <td id="cfResult">-</td>
-            </tr>
+                    <h2>Resistance Summary</h2>
 
-            <tr>
-            <td>Friction Resistance (kN)</td>
-            <td id="rfResult">-</td>
-            </tr>
+                    <table id="resultsTable">
 
-            <tr>
-            <td>Wetted Surface (m²)</td>
-            <td id="sResult">-</td>
-            </tr>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
 
-            </table>
+                        <tr>
+                            <td>Reynolds Number</td>
+                            <td id="reResult">-</td>
+                        </tr>
 
-            </div>
+                        <tr>
+                            <td>Froude Number</td>
+                            <td id="fnResult">-</td>
+                        </tr>
 
-        <div class="card">
-            <h2>Charts</h2>
-            <canvas id="resistanceChart"></canvas>
-        </div>
+                        <tr>
+                            <td>ITTC Friction Coefficient (Cf)</td>
+                            <td id="cfResult">-</td>
+                        </tr>
 
-    </section>
+                        <tr>
+                            <td>Friction Resistance (kN)</td>
+                            <td id="rfResult">-</td>
+                        </tr>
 
-</main>
+                        <tr>
+                            <td>Wetted Surface (m²)</td>
+                            <td id="sResult">-</td>
+                        </tr>
 
-<footer>
-    <p>© 2026 Primalisometric Consultancy</p>
-</footer>
-<script src="js/wettedSurface.js"></script>
-<script src="js/friction.js"></script>
+                        <tr>
+                            <td>Prismatic Coefficient (Cp)</td>
+                            <td id="cpResult">-</td>
+                        </tr>
 
-<script src="js/main.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/units.js"></script>
+                        <tr>
+                            <td>Form Factor (1+k₁)</td>
+                            <td id="k1Result">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Viscous Resistance (kN)</td>
+                            <td id="rvResult">-</td>
+                        </tr>
+
+                        <tr>
+                             <td>Wave Resistance (kN)</td>
+                             <td id="rwResult">-</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- Charts -->
+
+            <section id="chartsSection">
+
+                <div class="card">
+                    <h2>Charts</h2>
+
+                    <canvas id="resistanceChart"></canvas>
+                </div>
+
+            </section>
+
+            <!-- Applicability -->
+
+            <section id="applicabilitySection">
+
+                <div class="card">
+
+                    <h2>Applicability Check</h2>
+
+                    <ul id="validationList"></ul>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Primalisometric Consultancy</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="js/wettedSurface.js"></script>
+    <script src="js/formFactor.js"></script>
+    <script src="js/friction.js"></script>
+    <script src="js/waveResistance.js"></script>
+
+    <script src="js/main.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/units.js"></script>
 
 </body>
+
 </html>
