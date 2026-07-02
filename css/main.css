@@ -1,0 +1,35 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f3f5f7;
+    color:#222;
+}
+
+header{
+    background:#0d47a1;
+    color:white;
+    padding:20px;
+}
+
+main{
+    padding:25px;
+}
+
+section{
+    background:white;
+    border-radius:8px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#666;
+}

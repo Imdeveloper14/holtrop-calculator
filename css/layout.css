@@ -1,0 +1,36 @@
+.dashboard{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:20px;
+}
+
+.sidebar{
+    background:#16324f;
+    color:white;
+    padding:20px;
+    border-radius:10px;
+    min-height:650px;
+}
+
+.sidebar button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.workspace{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}

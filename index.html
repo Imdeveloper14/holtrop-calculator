@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Holtrop & Mennen Resistance Calculator</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/charts.css">
+    <link rel="stylesheet" href="css/report.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Holtrop & Mennen Resistance Calculator</h1>
+    <p>Primalisometric Consultancy</p>
+</header>
+
+<main class="dashboard">
+
+    <aside class="sidebar">
+
+        <h2>Input Modules</h2>
+
+        <button>Principal Particulars</button>
+        <button>Hull Geometry</button>
+        <button>Appendages</button>
+        <button>Environment</button>
+        <button>Propulsion</button>
+
+        <hr>
+
+        <button>Calculate Resistance</button>
+        <button>Generate Report</button>
+
+    </aside>
+
+    <section class="workspace">
+
+        <div class="card">
+            <h2>Principal Particulars</h2>
+            <p>Input form will appear here.</p>
+        </div>
+
+        <div class="card">
+            <h2>Resistance Summary</h2>
+            <p>Total Resistance: --</p>
+            <p>Effective Power: --</p>
+        </div>
+
+        <div class="card">
+            <h2>Charts</h2>
+            <canvas id="resistanceChart"></canvas>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 Primalisometric Consultancy</p>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/units.js"></script>
+
+</body>
+</html>
