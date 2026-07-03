@@ -9,11 +9,16 @@ function holtropWaveResistance(vessel) {
         V /
         Math.sqrt(g * vessel.lwl);
 
+    const Cp = vessel.cb / vessel.cm;
+
+
     return {
 
+        Cp,
         Fn,
 
         Rw: 0
+
 
     };
 

@@ -34,7 +34,8 @@ speed:Number(document.getElementById("speed").value)
 };
 
 const S = wettedSurface(vessel);
-
+const coeff = hullCoefficients(vessel);
+const hc = holtropCoefficients(vessel);
 const friction = frictionResistance(
     S,
     vessel.lwl,
@@ -47,13 +48,28 @@ const viscousResistance =
     friction.Rf;
 const wave =
     holtropWaveResistance(vessel);
+const air =
+    airResistance(vessel);
+const appendage =
+    appendageResistance(vessel);
+const correlation =
+    correlationAllowance(
+        vessel,
+        S
+    );
 const total =totalResistance(
         vessel,
         friction,
         viscousResistance,
         wave
     );
-
+const power =
+    effectivePower(
+        vessel,
+        total.Rt
+    );
+const propulsionData =
+    propulsion(power);
 // Display Results
 
 document.getElementById("reResult").textContent =
@@ -97,6 +113,43 @@ document.getElementById("rtResult").textContent =
 
 document.getElementById("peResult").textContent =
     (total.effectivePower / 1000).toFixed(2);
+
+document.getElementById("raResult").textContent =
+    (air.Ra / 1000).toFixed(2);
+
+document.getElementById("caResult").textContent =
+    (correlation.RA / 1000).toFixed(2);
+
+document.getElementById("peResult").textContent =
+    (power.PE / 1000).toFixed(2);
+
+document.getElementById("etaHResult").textContent =
+    propulsionData.hullEfficiency.toFixed(3);
+
+document.getElementById("etaOResult").textContent =
+    propulsionData.propellerEfficiency.toFixed(3);
+
+document.getElementById("pdResult").textContent =
+    (propulsionData.deliveredPower / 1000).toFixed(2);
+
+document.getElementById("pbResult").textContent =
+    (propulsionData.brakePower / 1000).toFixed(2);
+
+document.getElementById("cpCoeff").textContent =
+    coeff.Cp.toFixed(3);
+
+document.getElementById("lbCoeff").textContent =
+    coeff.LB.toFixed(2);
+
+document.getElementById("btCoeff").textContent =
+    coeff.BT.toFixed(2);
+
+document.getElementById("ltCoeff").textContent =
+    coeff.LT.toFixed(2);
+
+document.getElementById("c7Result").textContent =
+    hc.c7.toFixed(4);
+
 
 drawResistanceChart(
     friction,

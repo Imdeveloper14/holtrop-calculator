@@ -180,6 +180,76 @@
                             <td id="peResult"><strong>-</strong></td>
                         </tr>
 
+                        <tr>
+                            <td><strong>Effective Power (kW)</strong></td>
+                            <td id="peResult">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Hull Efficiency (ηH)</td>
+                            <td id="etaHResult">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Propeller Efficiency (ηO)</td>
+                            <td id="etaOResult">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Delivered Power (kW)</td>
+                            <td id="pdResult">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Holtrop c₇</td>
+                            <td id="c7Result">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Name</td>
+                            <td id="resultId">-</td>
+                        </tr>
+
+                    <div class="card">
+
+                        <h2>Hull Coefficients</h2>
+
+                        <table>
+
+                        <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                        </tr>
+
+                        <tr>
+                        <td>Prismatic Coefficient (Cp)</td>
+                        <td id="cpCoeff">-</td>
+                        </tr>
+
+                        <tr>
+                        <td>L/B Ratio</td>
+                        <td id="lbCoeff">-</td>
+                        </tr>
+
+                        <tr>
+                        <td>B/T Ratio</td>
+                        <td id="btCoeff">-</td>
+                        </tr>
+
+                        <tr>
+                        <td>L/T Ratio</td>
+                        <td id="ltCoeff">-</td>
+                        </tr>
+
+                        </table>
+
+                        </div>    
+
+                        <tr>
+    <td>Brake Power (kW)</td>
+    <td id="pbResult">-</td>
+</tr>
+
                     </table>
 
                 </div>
@@ -223,11 +293,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="js/wettedSurface.js"></script>
+    <script src="js/hullCoefficients.js"></script>
     <script src="js/formFactor.js"></script>
     <script src="js/friction.js"></script>
     <script src="js/holtropWave.js"></script>
+    <script src="js/appendageResistance.js"></script>
+    <script src="js/airResistance.js"></script>
+    <script src="js/correlationAllowance.js"></script>
+    <script src="js/effectivePower.js"></script>
+    <script src="js/propulsion.js"></script>
     <script src="js/totalResistance.js"></script>
 
+    <!-- THIS MUST EXIST -->
+    <script src="js/holtropCoefficients.js"></script>
+        
     <script src="js/main.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/utils.js"></script>
