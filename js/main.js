@@ -150,6 +150,8 @@ document.getElementById("ltCoeff").textContent =
 document.getElementById("c7Result").textContent =
     hc.c7.toFixed(4);
 
+document.getElementById("c7Coeff").textContent =
+    hc.c7.toFixed(4);
 
 drawResistanceChart(
     friction,
