@@ -1,25 +1,34 @@
-function appendageResistance(vessel) {
+function appendageResistance(vessel, Cf, appendagesList) {
 
-    /*
-        Temporary implementation.
+    const list = appendagesList || [];
 
-        Later this will include:
-        - Rudders
-        - Shaft brackets
-        - Bilge keels
-        - Bossings
-        - Stabilizer fins
-    */
+    if (list.length === 0) {
+        return {
+            appendageArea: 0,
+            Rapp: 0
+        };
+    }
 
-    const appendageArea = 0;
+    const rho = 1025.0;
+    const V = vessel.speed * 0.514444;
 
-    const resistance = 0;
+    let sumS_k2 = 0;
+    let totalArea = 0;
+
+    list.forEach(app => {
+        const area = Number(app.area) || 0;
+        const k2_factor = Number(app.k2) || 1.0;
+        sumS_k2 += area * k2_factor;
+        totalArea += area;
+    });
+
+    const Rapp = 0.5 * rho * V * V * sumS_k2 * Cf;
 
     return {
 
-        appendageArea,
+        appendageArea: totalArea,
 
-        Rapp: resistance
+        Rapp
 
     };
 

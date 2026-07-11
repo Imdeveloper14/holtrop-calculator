@@ -1,11 +1,61 @@
 let resistanceChart = null;
+const appendagesList = [];
+window.appendagesList = appendagesList;
+
 document.addEventListener("DOMContentLoaded",()=>{
 
-document
-.getElementById("calculateBtn")
-.addEventListener("click",calculate);
+const calc = () => {
+    calculate();
+};
+
+document.getElementById("calculateBtn").addEventListener("click", calc);
+const calcWs = document.getElementById("calculateBtnWorkspace");
+if (calcWs) {
+    calcWs.addEventListener("click", calc);
+}
+
+document.getElementById("appType").addEventListener("change", (e) => {
+    const parts = e.target.value.split(",");
+    if (parts.length === 2) {
+        document.getElementById("appK2").value = parts[1];
+    }
+});
+
+document.getElementById("addAppBtn").addEventListener("click", () => {
+    const select = document.getElementById("appType");
+    const name = select.options[select.selectedIndex].text.split(" (")[0];
+    const area = Number(document.getElementById("appArea").value) || 0;
+    const k2 = Number(document.getElementById("appK2").value) || 1.0;
+
+    if (area > 0) {
+        appendagesList.push({ name, area, k2 });
+        renderAppendages();
+        document.getElementById("appArea").value = 0;
+    }
+});
 
 });
+
+function renderAppendages() {
+    const tbody = document.getElementById("appTableBody");
+    tbody.innerHTML = "";
+    appendagesList.forEach((app, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${app.name}</td>
+            <td>${app.area.toFixed(2)}</td>
+            <td>${app.k2.toFixed(2)}</td>
+            <td><button type="button" onclick="deleteAppendage(${idx})">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+window.renderAppendages = renderAppendages;
+
+window.deleteAppendage = function(idx) {
+    appendagesList.splice(idx, 1);
+    renderAppendages();
+};
 
 function calculate(){
 
@@ -29,6 +79,32 @@ cwp:Number(document.getElementById("cwp").value),
 
 lcb:Number(document.getElementById("lcb").value),
 
+abt:Number(document.getElementById("abt").value),
+
+hb:Number(document.getElementById("hb").value),
+
+at:Number(document.getElementById("at").value),
+
+rhoAir:Number(document.getElementById("rhoAir").value),
+
+windSpeed:Number(document.getElementById("windSpeed").value),
+
+windDir:Number(document.getElementById("windDir").value),
+
+av:Number(document.getElementById("av").value),
+
+cdAir:Number(document.getElementById("cdAir").value),
+
+numPropellers: Number(document.getElementById("numPropellers").value),
+propDiameter: Number(document.getElementById("propDiameter").value),
+propPitch: Number(document.getElementById("propPitch").value),
+propEAR: Number(document.getElementById("propEAR").value),
+propBlades: Number(document.getElementById("propBlades").value),
+propRPM: Number(document.getElementById("propRPM").value),
+wakeFraction: Number(document.getElementById("wakeFraction").value),
+thrustDeduction: Number(document.getElementById("thrustDeduction").value),
+rotativeEfficiency: Number(document.getElementById("rotativeEfficiency").value),
+
 speed:Number(document.getElementById("speed").value)
 
 };
@@ -36,6 +112,8 @@ speed:Number(document.getElementById("speed").value)
 const S = wettedSurface(vessel);
 const coeff = hullCoefficients(vessel);
 const hc = holtropCoefficients(vessel);
+const c16 = holtropC16(vessel);
+const c15 = holtropC15(vessel);
 const friction = frictionResistance(
     S,
     vessel.lwl,
@@ -46,22 +124,60 @@ const ff = formFactor(vessel);
 const viscousResistance =
     (1 + ff.k1) *
     friction.Rf;
+
+// Calculate wave resistance coefficients
+const Cp_wave = vessel.cb / vessel.cm;
+const Lr_wave = vessel.lwl * (1 - Cp_wave + (0.06 * Cp_wave * vessel.lcb) / (4 * Cp_wave - 1));
+const ie_exponent = 
+    -Math.pow(vessel.lwl / vessel.beam, 0.80856) *
+    Math.pow(1 - vessel.cwp, 0.30484) *
+    Math.pow(Math.max(0, 1 - Cp_wave - 0.0225 * vessel.lcb), 0.6367) *
+    Math.pow((vessel.lwl - Lr_wave) / vessel.beam, 0.34574) *
+    Math.pow(100 * vessel.disp / Math.pow(vessel.lwl, 3), 0.16302);
+const ie = 1 + 89 * Math.exp(ie_exponent);
+
+const c1_val = 2223105 * Math.pow(hc.c7, 3.78613) * Math.pow(vessel.draft / vessel.beam, 1.07961) * Math.pow(Math.max(1.0, 90 - ie), -1.37565);
+const c1 = { c1: c1_val };
+const c2 = { c2: 1.0 };
+const c5 = { c5: 1.0 };
+
+const m1 = { m1: 0.0140407 * (vessel.lwl / vessel.draft) - 1.75254 * (Math.pow(vessel.disp, 1/3) / vessel.lwl) - 4.79323 * (vessel.beam / vessel.lwl) - c16.c16 };
+const m2 = { m2: c15.c15 * Cp_wave * Cp_wave * Math.exp(-0.1 / (friction.Fn * friction.Fn || 1.0)) };
+const lambda = { lambda: (vessel.lwl / vessel.beam < 12) ? (1.446 * Cp_wave - 0.03 * (vessel.lwl / vessel.beam)) : (1.446 * Cp_wave - 0.36) };
+
 const wave =
-    holtropWaveResistance(vessel);
+    holtropWaveResistance(
+        vessel,
+        c1.c1,
+        c2.c2,
+        c5.c5,
+        c15.c15,
+        c16.c16,
+        m1.m1,
+        m2.m2,
+        lambda.lambda
+    );
 const air =
     airResistance(vessel);
 const appendage =
-    appendageResistance(vessel);
+    appendageResistance(vessel, friction.Cf, appendagesList);
 const correlation =
     correlationAllowance(
         vessel,
         S
     );
-const total =totalResistance(
+const bulb = bulbResistance(vessel);
+const transom = transomResistance(vessel);
+const total = totalResistance(
         vessel,
         friction,
         viscousResistance,
-        wave
+        wave,
+        appendage.Rapp,
+        air.Ra,
+        correlation.RA,
+        bulb.Rb,
+        transom.Rtr
     );
 const power =
     effectivePower(
@@ -70,6 +186,7 @@ const power =
     );
 const propulsionData =
     propulsion(power);
+const propSelection = calculatePropellerSelection(vessel, total);
 // Display Results
 
 document.getElementById("reResult").textContent =
@@ -99,29 +216,26 @@ document.getElementById("rvResult").textContent =
 document.getElementById("rwResult").textContent =
     (wave.Rw / 1000).toFixed(2);
 
+document.getElementById("rbResult").textContent =
+    (total.breakdown.bulb / 1000).toFixed(2);
+
+document.getElementById("rtrResult").textContent =
+    (total.breakdown.transom / 1000).toFixed(2);
+
 document.getElementById("raResult").textContent =
-    (total.airResistance / 1000).toFixed(2);
+    (total.breakdown.air / 1000).toFixed(2);
 
 document.getElementById("rappResult").textContent =
-    (total.appendageResistance / 1000).toFixed(2);
+    (total.breakdown.appendage / 1000).toFixed(2);
 
 document.getElementById("caResult").textContent =
-    (total.correlationAllowance / 1000).toFixed(2);
+    (total.breakdown.correlation / 1000).toFixed(2);
 
 document.getElementById("rtResult").textContent =
     (total.Rt / 1000).toFixed(2);
 
 document.getElementById("peResult").textContent =
     (total.effectivePower / 1000).toFixed(2);
-
-document.getElementById("raResult").textContent =
-    (air.Ra / 1000).toFixed(2);
-
-document.getElementById("caResult").textContent =
-    (correlation.RA / 1000).toFixed(2);
-
-document.getElementById("peResult").textContent =
-    (power.PE / 1000).toFixed(2);
 
 document.getElementById("etaHResult").textContent =
     propulsionData.hullEfficiency.toFixed(3);
@@ -134,6 +248,17 @@ document.getElementById("pdResult").textContent =
 
 document.getElementById("pbResult").textContent =
     (propulsionData.brakePower / 1000).toFixed(2);
+
+document.getElementById("propVaResult").textContent = propSelection.Va.toFixed(2);
+document.getElementById("propJResult").textContent = propSelection.J.toFixed(3);
+document.getElementById("propKTResult").textContent = propSelection.KT.toFixed(4);
+document.getElementById("prop10KQResult").textContent = (propSelection.KQ * 10).toFixed(4);
+document.getElementById("propThrustResult").textContent = (propSelection.thrust / 1000).toFixed(2);
+document.getElementById("propTorqueResult").textContent = (propSelection.torque / 1000).toFixed(2);
+document.getElementById("propEtaOResult2").textContent = propSelection.etaO.toFixed(3);
+document.getElementById("propPCResult").textContent = propSelection.PC.toFixed(3);
+
+drawOpenWaterChart(vessel, propSelection.J);
 
 document.getElementById("cpCoeff").textContent =
     coeff.Cp.toFixed(3);
@@ -153,13 +278,79 @@ document.getElementById("c7Result").textContent =
 document.getElementById("c7Coeff").textContent =
     hc.c7.toFixed(4);
 
-drawResistanceChart(
+document.getElementById("c15Result").textContent =
+    c15.c15.toFixed(4);
+
+document.getElementById("c16Result").textContent =
+    c16.c16.toFixed(4);
+
+drawResistanceChart(total.breakdown);
+
+// Run applicability check
+const checks = checkApplicability(vessel, friction);
+const valList = document.getElementById("validationList");
+valList.innerHTML = "";
+
+checks.forEach(check => {
+    const li = document.createElement("li");
+    li.style.margin = "8px 0";
+    li.style.padding = "10px";
+    li.style.borderRadius = "4px";
+    li.style.fontWeight = "bold";
+    li.style.listStyleType = "none";
+
+    if (check.status === "PASS") {
+        li.style.backgroundColor = "#e8f5e9";
+        li.style.color = "#2e7d32";
+        li.style.borderLeft = "5px solid #4caf50";
+        li.textContent = `[PASS] ${check.name}: ${check.msg}`;
+    } else if (check.status === "WARNING") {
+        li.style.backgroundColor = "#fffde7";
+        li.style.color = "#f57f17";
+        li.style.borderLeft = "5px solid #fbc02d";
+        li.textContent = `[WARNING] ${check.name}: ${check.msg}`;
+    } else if (check.status === "OUT OF RANGE") {
+        li.style.backgroundColor = "#ffebee";
+        li.style.color = "#c62828";
+        li.style.borderLeft = "5px solid #f44336";
+        li.textContent = `[OUT OF RANGE] ${check.name}: ${check.msg}`;
+    }
+    valList.appendChild(li);
+});
+
+// Cache variables globally for report generator
+window.lastCalculation = {
+    vessel,
     friction,
-    viscousResistance,
-    wave
-);
+    coeff,
+    hc,
+    c15,
+    c16,
+    total,
+    power,
+    propulsionData,
+    checks
+};
+
+if (typeof window.autoSaveProject === "function") {
+    window.autoSaveProject();
 }
-function drawResistanceChart(friction, viscous, wave) {
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const reportBtn = document.getElementById("generateReportBtn");
+    if (reportBtn) {
+        reportBtn.addEventListener("click", () => {
+            if (typeof generatePDFReport === "function") {
+                generatePDFReport();
+            } else {
+                alert("Please perform a calculation first.");
+            }
+        });
+    }
+});
+function drawResistanceChart(breakdown) {
 
     const ctx = document
         .getElementById("resistanceChart")
@@ -178,7 +369,12 @@ function drawResistanceChart(friction, viscous, wave) {
             labels: [
                 "Friction",
                 "Viscous",
-                "Wave"
+                "Wave",
+                "Bulb",
+                "Transom",
+                "Appendage",
+                "Air",
+                "Correlation"
             ],
 
             datasets: [{
@@ -187,12 +383,22 @@ function drawResistanceChart(friction, viscous, wave) {
                 backgroundColor: [
                         "#2196F3",
                         "#4CAF50",
-                        "#FF9800"
+                        "#FF9800",
+                        "#9C27B0",
+                        "#FF5722",
+                        "#795548",
+                        "#607D8B",
+                        "#E91E63"
                 ],
                 data: [
-                    Number(friction.Rf / 1000),
-                    Number(viscous / 1000),
-                    Number(wave.Rw / 1000)
+                    Number(breakdown.friction / 1000),
+                    Number(breakdown.viscous / 1000),
+                    Number(breakdown.wave / 1000),
+                    Number(breakdown.bulb / 1000),
+                    Number(breakdown.transom / 1000),
+                    Number(breakdown.appendage / 1000),
+                    Number(breakdown.air / 1000),
+                    Number(breakdown.correlation / 1000)
                 ]
 
             }]

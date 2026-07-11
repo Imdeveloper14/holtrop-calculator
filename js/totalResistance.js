@@ -1,21 +1,19 @@
-function totalResistance(vessel, friction, viscousResistance, wave) {
+function totalResistance(vessel, friction, viscousResistance, wave, appendageResistance, airResistance, correlationAllowance, bulbResistance, transomResistance) {
 
-    // Temporary values
-    // These will later be replaced by
-    // full Holtrop equations.
-
-    const appendageResistance = 0;
-
-    const airResistance = 0;
-
-    const correlationAllowance = 0;
+    const Rb = bulbResistance || 0;
+    const Rtr = transomResistance || 0;
+    const Rapp = appendageResistance || 0;
+    const Ra = airResistance || 0;
+    const RA = correlationAllowance || 0;
 
     const Rt =
         viscousResistance +
         wave.Rw +
-        appendageResistance +
-        airResistance +
-        correlationAllowance;
+        Rapp +
+        Ra +
+        RA +
+        Rb +
+        Rtr;
 
     const speedMS = vessel.speed * 0.514444;
 
@@ -24,15 +22,20 @@ function totalResistance(vessel, friction, viscousResistance, wave) {
 
     return {
 
-        appendageResistance,
-
-        airResistance,
-
-        correlationAllowance,
-
         Rt,
 
-        effectivePower
+        effectivePower,
+
+        breakdown: {
+            friction: friction.Rf,
+            viscous: viscousResistance,
+            wave: wave.Rw,
+            bulb: Rb,
+            transom: Rtr,
+            appendage: Rapp,
+            air: Ra,
+            correlation: RA
+        }
 
     };
 

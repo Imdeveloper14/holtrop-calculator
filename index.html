@@ -38,8 +38,17 @@
 
             <hr>
 
-            <button>Calculate Resistance</button>
-            <button>Generate Report</button>
+            <button id="calculateBtn">Calculate Resistance</button>
+            <button id="generateReportBtn">Generate PDF Report</button>
+
+            <hr>
+
+            <h3>Project Actions</h3>
+            <button id="newProjectBtn">New Project</button>
+            <button id="openProjectBtn">Open Project</button>
+            <button id="saveProjectBtn">Save Project</button>
+            <button id="exportJsonBtn">Export JSON</button>
+            <input type="file" id="projectFileInput" style="display: none;" accept=".json">
 
         </aside>
 
@@ -82,12 +91,144 @@
                         <label>LCB (%LPP from Midship)</label>
                         <input id="lcb" type="number" step="0.01">
 
+                        <label>Bulb Area (m²)</label>
+                        <input id="abt" type="number" step="0.01" value="0">
+
+                        <label>Bulb Center Height (m)</label>
+                        <input id="hb" type="number" step="0.01" value="0">
+
+                        <label>Immersed Transom Area (m²)</label>
+                        <input id="at" type="number" step="0.01" value="0">
+
                         <label>Speed (knots)</label>
                         <input id="speed" type="number" step="0.1">
 
-                        <button id="calculateBtn">
+                        <button id="calculateBtnWorkspace">
                             Calculate Resistance
                         </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Appendages Section -->
+
+            <section id="appendagesSection">
+
+                <div class="card">
+
+                    <h2>Manage Appendages</h2>
+
+                    <div class="form-grid">
+
+                        <label>Appendage Type</label>
+                        <select id="appType">
+                            <option value="Rudder behind Stern,1.40">Rudder behind Stern (1+k2 = 1.40)</option>
+                            <option value="Bilge Keels,1.40">Bilge Keels (1+k2 = 1.40)</option>
+                            <option value="Rudder behind Skeg,1.70">Rudder behind Skeg (1+k2 = 1.70)</option>
+                            <option value="Skeg,1.80">Skeg (1+k2 = 1.80)</option>
+                            <option value="Hull Bossings,2.00">Hull Bossings (1+k2 = 2.00)</option>
+                            <option value="Stabilizer Fins,2.80">Stabilizer Fins (1+k2 = 2.80)</option>
+                            <option value="Shafts,3.00">Shafts (1+k2 = 3.00)</option>
+                            <option value="Shaft Brackets,3.00">Shaft Brackets (1+k2 = 3.00)</option>
+                        </select>
+
+                        <label>Wetted Area (m²)</label>
+                        <input id="appArea" type="number" step="0.01" value="0">
+
+                        <label>Form Factor (1+k₂)</label>
+                        <input id="appK2" type="number" step="0.01" value="1.40">
+
+                        <button id="addAppBtn" type="button">Add Appendage</button>
+
+                    </div>
+
+                    <table id="appTable" style="margin-top: 15px; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Wetted Area (m²)</th>
+                                <th>1+k₂</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appTableBody">
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- Environment Section -->
+
+            <section id="environmentSection">
+
+                <div class="card">
+
+                    <h2>Environment Details</h2>
+
+                    <div class="form-grid">
+
+                        <label>Air Density (kg/m³)</label>
+                        <input id="rhoAir" type="number" step="0.001" value="1.225">
+
+                        <label>Wind Speed (knots)</label>
+                        <input id="windSpeed" type="number" step="0.1" value="0">
+
+                        <label>Wind Direction (° from bow)</label>
+                        <input id="windDir" type="number" step="1" value="0">
+
+                        <label>Projected Frontal Area (Av) (m²)</label>
+                        <input id="av" type="number" step="0.1" value="0">
+
+                        <label>Drag Coefficient (Cd)</label>
+                        <input id="cdAir" type="number" step="0.01" value="0.8">
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Propeller Section -->
+
+            <section id="propellerSection">
+
+                <div class="card">
+
+                    <h2>Propeller Selection</h2>
+
+                    <div class="form-grid">
+
+                        <label>Number of Propellers</label>
+                        <input id="numPropellers" type="number" value="1" min="1" step="1">
+
+                        <label>Propeller Diameter (m)</label>
+                        <input id="propDiameter" type="number" step="0.05" value="4.0">
+
+                        <label>Pitch Ratio (P/D)</label>
+                        <input id="propPitch" type="number" step="0.01" value="1.0">
+
+                        <label>Expanded Area Ratio (EAR)</label>
+                        <input id="propEAR" type="number" step="0.05" value="0.55">
+
+                        <label>Number of Blades</label>
+                        <input id="propBlades" type="number" value="4" min="2" step="1">
+
+                        <label>Shaft RPM</label>
+                        <input id="propRPM" type="number" step="1" value="120">
+
+                        <label>Wake Fraction (w)</label>
+                        <input id="wakeFraction" type="number" step="0.01" value="0.25">
+
+                        <label>Thrust Deduction (t)</label>
+                        <input id="thrustDeduction" type="number" step="0.01" value="0.18">
+
+                        <label>Relative Rotative Efficiency (ηR)</label>
+                        <input id="rotativeEfficiency" type="number" step="0.01" value="1.0">
 
                     </div>
 
@@ -156,6 +297,16 @@
                         </tr>
 
                         <tr>
+                             <td>Bulb Resistance (kN)</td>
+                             <td id="rbResult">-</td>
+                        </tr>
+
+                        <tr>
+                             <td>Transom Resistance (kN)</td>
+                             <td id="rtrResult">-</td>
+                        </tr>
+
+                        <tr>
                             <td>Air Resistance (kN)</td>
                             <td id="raResult">-</td>
                         </tr>
@@ -210,6 +361,42 @@
                             <td id="pbResult">-</td>
                         </tr>
 
+                        <tr>
+                            <th colspan="2" style="background-color: #f5f5f5; font-weight: bold; text-align: left; padding: 8px;">Propeller Characteristics</th>
+                        </tr>
+                        <tr>
+                            <td>Advance Speed (Va) (m/s)</td>
+                            <td id="propVaResult">-</td>
+                        </tr>
+                        <tr>
+                            <td>Advance Coefficient (J)</td>
+                            <td id="propJResult">-</td>
+                        </tr>
+                        <tr>
+                            <td>Thrust Coefficient (KT)</td>
+                            <td id="propKTResult">-</td>
+                        </tr>
+                        <tr>
+                            <td>Torque Coefficient (10*KQ)</td>
+                            <td id="prop10KQResult">-</td>
+                        </tr>
+                        <tr>
+                            <td>Thrust Required (kN)</td>
+                            <td id="propThrustResult">-</td>
+                        </tr>
+                        <tr>
+                            <td>Torque (kNm)</td>
+                            <td id="propTorqueResult">-</td>
+                        </tr>
+                        <tr>
+                            <td>Open Water Efficiency (ηO)</td>
+                            <td id="propEtaOResult2">-</td>
+                        </tr>
+                        <tr>
+                            <td>Propulsive Coefficient (PC)</td>
+                            <td id="propPCResult">-</td>
+                        </tr>
+
                     </table>
 
                 </div>
@@ -250,6 +437,16 @@
                             <td id="c7Coeff">-</td>
                         </tr>
 
+                        <tr>
+                            <td>Holtrop c₁₅</td>
+                            <td id="c15Result">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Holtrop c₁₆</td>
+                            <td id="c16Result">-</td>
+                        </tr>
+
                     </table>
 
                 </div>
@@ -264,6 +461,135 @@
                     <h2>Charts</h2>
 
                     <canvas id="resistanceChart"></canvas>
+                    <h3 style="margin-top: 20px;">Propeller Open Water Diagram</h3>
+                    <canvas id="openWaterChart"></canvas>
+                </div>
+
+            </section>
+
+            <!-- Performance Section -->
+
+            <section id="performanceSection">
+
+                <div class="card">
+
+                    <h2>Performance Analysis (Speed Curves)</h2>
+
+                    <div class="form-grid">
+
+                        <label>Start Speed (knots)</label>
+                        <input id="curveStart" type="number" step="0.5" value="5">
+
+                        <label>End Speed (knots)</label>
+                        <input id="curveEnd" type="number" step="0.5" value="20">
+
+                        <label>Increment (knots)</label>
+                        <input id="curveStep" type="number" step="0.1" value="1">
+
+                        <button id="generateCurvesBtn" type="button">Generate Curves</button>
+                        <button id="exportCsvBtn" type="button">Export to CSV</button>
+
+                    </div>
+
+                    <div style="margin-top: 20px; max-height: 300px;">
+                        <canvas id="rtCurveChart"></canvas>
+                    </div>
+
+                    <div style="margin-top: 20px; max-height: 300px;">
+                        <canvas id="peCurveChart"></canvas>
+                    </div>
+
+                    <div style="margin-top: 20px; max-height: 300px;">
+                        <canvas id="breakdownCurveChart"></canvas>
+                    </div>
+
+                    <h3 style="margin-top: 25px;">Speed Curve Results Table</h3>
+
+                    <table id="curveTable" style="margin-top: 15px; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Speed (kn)</th>
+                                <th>Rt (kN)</th>
+                                <th>PE (kW)</th>
+                                <th>PD (kW)</th>
+                                <th>PB (kW)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="curveTableBody">
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- Design Comparison Section -->
+
+            <section id="comparisonSection">
+
+                <div class="card">
+
+                    <h2>Design Comparison</h2>
+
+                    <div class="form-grid">
+
+                        <label>New Case Name</label>
+                        <input id="comparisonCaseName" type="text" placeholder="Design Case A">
+
+                        <button id="saveCaseBtn" type="button">Save Current Case</button>
+
+                    </div>
+
+                    <div style="margin-top: 15px;">
+
+                        <h3>Saved Design Cases</h3>
+
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Case Name</th>
+                                    <th>LWL (m)</th>
+                                    <th>Draft (m)</th>
+                                    <th>Speed (kn)</th>
+                                    <th>Rt (kN)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="savedCasesListBody">
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div style="margin-top: 20px;">
+
+                        <button id="compareCasesBtn" type="button">Compare Selected Cases</button>
+                        <button id="exportCompPdfBtn" type="button">Export PDF Comparison</button>
+                        <button id="exportCompCsvBtn" type="button">Export CSV Comparison</button>
+
+                    </div>
+
+                    <div style="margin-top: 25px;">
+
+                        <h3>Comparison Matrix</h3>
+
+                        <table id="comparisonMatrixTable" style="width: 100%; border-collapse: collapse;">
+                        </table>
+
+                    </div>
+
+                    <div style="margin-top: 25px; max-height: 300px;">
+                        <canvas id="compRtChart"></canvas>
+                    </div>
+
+                    <div style="margin-top: 25px; max-height: 300px;">
+                        <canvas id="compPeChart"></canvas>
+                    </div>
+
+                    <div style="margin-top: 25px; max-height: 300px;">
+                        <canvas id="compBreakdownChart"></canvas>
+                    </div>
+
                 </div>
 
             </section>
@@ -306,7 +632,21 @@
 
     <!-- THIS MUST EXIST -->
     <script src="js/holtropCoefficients.js"></script>
+    <script src="js/holtropC15.js"></script>
+    <script src="js/holtropC16.js"></script>
+    <script src="js/bulbResistance.js"></script>
+    <script src="js/transomResistance.js"></script>
+    <script src="js/applicability.js"></script>
+    <script src="js/reportGenerator.js"></script>
+    <script src="js/projectManager.js"></script>
+    <script src="js/performanceCurves.js"></script>
+    <script src="js/designComparison.js"></script>
+    <script src="js/propellerSelection.js"></script>
+    <script src="js/openWater.js"></script>
         
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script src="js/main.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/utils.js"></script>
