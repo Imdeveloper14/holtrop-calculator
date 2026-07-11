@@ -1,0 +1,2 @@
+export function measurements(d){const cp=d.cb/d.cm, vol=d.lpp*d.beam*d.draft*d.cb;return [['Length (LPP)',d.lpp.toFixed(2)+' m'],['Beam',d.beam.toFixed(2)+' m'],['Draft',d.draft.toFixed(2)+' m'],['Displacement volume',vol.toFixed(1)+' m³'],['LCB',d.lcb.toFixed(2)+' m'],['Cb',d.cb.toFixed(3)],['Cp',cp.toFixed(3)],['Cm',d.cm.toFixed(3)]];}
+export function renderMeasurements(d){const el=document.getElementById('hullMeasurements');if(el)el.innerHTML=measurements(d).map(x=>`<span tabindex="0" title="Highlight ${x[0]}">${x[0]}</span><span>${x[1]}</span>`).join('');}

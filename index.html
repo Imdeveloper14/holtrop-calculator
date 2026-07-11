@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -20,7 +20,10 @@
   <link rel="stylesheet" href="css/tables.css">
   <link rel="stylesheet" href="css/charts.css">
   <link rel="stylesheet" href="css/report.css">
-  <link rel="stylesheet" href="css/responsive.css">
+        <link rel="stylesheet" href="css/responsive.css">
+        <link rel="stylesheet" href="css/hull-viewer.css">
+        <link rel="stylesheet" href="css/professional-theme.css">
+        <style>.hull-viewer-layout{grid-template-columns:minmax(0,1fr) 340px;gap:14px}.hull-canvas-card,.hull-viewer{min-height:640px;height:640px}@media(max-width:900px){.hull-canvas-card,.hull-viewer{min-height:440px;height:440px}}</style>
 </head>
 
 <body>
@@ -77,10 +80,6 @@
 
     <!-- Right controls -->
     <div class="topbar-right">
-      <button class="topbar-btn icon-only" id="darkModeToggleBtn" title="Toggle Dark Mode">
-        <i data-lucide="moon" style="width:15px;height:15px;" id="darkModeIcon"></i>
-      </button>
-      <div class="topbar-divider"></div>
       <div class="user-avatar" title="Primalisometric Consultancy">P</div>
     </div>
 
@@ -109,6 +108,10 @@
       <button class="nav-item" data-nav="vesselSection">
         <i data-lucide="ship" class="nav-icon"></i>
         <span class="nav-label">Vessel Inputs</span>
+      </button>
+      <button class="nav-item" data-nav="hullViewerSection">
+        <i data-lucide="box" class="nav-icon"></i>
+        <span class="nav-label">3D Hull Viewer</span>
       </button>
 
       <button class="nav-item" data-nav="resistanceSection">
@@ -510,6 +513,43 @@
       <!-- ============================================================
            SECTION: RESISTANCE RESULTS
            ============================================================ -->
+      <section class="workspace-section" id="hullViewerSection">
+        <div class="section-header">
+          <div><h1 class="section-title">3D Hull Geometry</h1><p class="section-subtitle">Interactive procedural engineering reference model</p></div>
+        </div>
+        <div class="hull-viewer-layout">
+          <div class="hull-canvas-card">
+            <div id="hullViewer" class="hull-viewer" aria-label="Interactive 3D hull visualization"></div>
+            <div class="hull-toolbar" aria-label="Hull viewer controls">
+              <button data-hull-action="reset" title="Reset view" aria-label="Reset view">↺</button><button data-hull-action="wireframe" title="Wireframe" aria-label="Wireframe">▧</button>
+              <button data-hull-action="camera" title="Perspective / orthographic" aria-label="Camera">◈</button><button data-hull-action="screenshot" title="Screenshot" aria-label="Screenshot">⌑</button>
+              <button data-hull-action="fullscreen" title="Fullscreen" aria-label="Fullscreen">⛶</button><button data-hull-action="labels" title="Reference geometry" aria-label="Reference geometry">⌖</button><button data-hull-action="grid" title="Grid" aria-label="Grid">#</button>
+            </div>
+            <div class="hull-view-buttons">
+              <button data-hull-view="iso">Isometric</button><button data-hull-view="top">Top</button><button data-hull-view="side">Side</button><button data-hull-view="front">Front</button><button data-hull-view="aft">Aft</button><button data-hull-view="bottom">Bottom</button><button data-hull-view="section">Section</button>
+            </div>
+          </div>
+          <aside class="hull-panel">
+            <h3>Geometry &amp; measurements</h3>
+            <div id="hullMeasurements" class="hull-measurements"></div>
+            <h3>Layers</h3>
+            <div class="hull-layers">
+              <label><input type="checkbox" data-hull-layer="surface" checked> Hull surface</label><label><input type="checkbox" data-hull-layer="wireframe"> Wireframe</label>
+              <label><input type="checkbox" data-hull-layer="stations" checked> Stations</label><label><input type="checkbox" data-hull-layer="buttocks"> Buttocks</label>
+              <label><input type="checkbox" data-hull-layer="waterlines" checked> Waterlines</label><label><input type="checkbox" data-hull-layer="grid" checked> Frame grid</label>
+              <label><input type="checkbox" data-hull-layer="axes" checked> Reference axes</label><label><input type="checkbox" data-hull-layer="labels" checked> Dimension labels</label>
+              <label><input type="checkbox" data-hull-layer="bounds"> Bounding box</label>
+            </div>
+            <h3>Display</h3>
+            <label class="station-readout">Hull opacity <output id="hullOpacityValue">94%</output><input id="hullOpacity" type="range" min="15" max="100" value="94"></label>
+            <h3>Station section</h3>
+            <label class="station-readout">Station <output id="stationValue">50%</output><input id="stationSlider" type="range" min="0" max="100" value="50"></label>
+            <div class="hull-row"><button id="stationAnimateBtn">Animate stations</button><button data-hull-export="obj">Export OBJ</button><button data-hull-export="glb">Export GLB</button><button data-hull-export="svg">Export SVG</button></div>
+            <p id="hullSelection" class="hull-selection">Hover over the hull to inspect it. Click for dimensions.</p>
+          </aside>
+        </div>
+      </section>
+
       <section class="workspace-section" id="resistanceSection">
         <div class="section-header">
           <h1 class="section-title">Resistance Results</h1>
@@ -1582,20 +1622,7 @@
           <h1 class="section-title">Settings</h1>
           <p class="section-subtitle">Application preferences and configuration</p>
         </div>
-        <div class="card">
-          <div class="card-header"><i data-lucide="settings-2" class="card-header-icon"></i><h3 class="card-title">Appearance</h3></div>
-          <div class="card-body">
-            <div class="setting-row">
-              <div>
-                <div class="setting-label">Dark Mode</div>
-                <div class="setting-description">Toggle between light and dark interface themes</div>
-              </div>
-              <button class="toggle-btn" id="darkModeToggleSettings">
-                <span class="toggle-knob"></span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <div class="card"><div class="card-header"><i data-lucide="palette" class="card-header-icon"></i><h3 class="card-title">Professional Engineering Interface</h3></div><div class="card-body"><p class="setting-description">A single high-contrast engineering theme is applied throughout the workspace.</p></div></div>
       </section>
 
     </main>
@@ -1604,6 +1631,7 @@
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
 <script src="js/utils.js"></script>
@@ -1643,6 +1671,7 @@
 <script src="js/batchProcessor.js"></script>
 <script src="js/propellerSelection.js"></script>
 <script src="js/openWater.js"></script>
+<script type="module" src="js/hullViewer.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

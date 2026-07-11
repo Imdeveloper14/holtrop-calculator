@@ -77,21 +77,6 @@
   --t-slow:  300ms ease;
 }
 
-/* ---- Dark Theme ---- */
-[data-theme="dark"] {
-  --color-bg:          #0D1117;
-  --color-surface:     #161B22;
-  --color-surface-2:   #21262D;
-  --color-border:      #30363D;
-  --color-border-h:    #484F58;
-  --color-text-1:      #E6EDF3;
-  --color-text-2:      #C9D1D9;
-  --color-text-3:      #8B949E;
-  --color-text-4:      #656D76;
-  --sidebar-bg:        #010409;
-  --sidebar-border:    rgba(255,255,255,0.04);
-}
-
 /* ---- Reset ---- */
 *, *::before, *::after {
   box-sizing: border-box;

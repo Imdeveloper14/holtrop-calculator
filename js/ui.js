@@ -79,52 +79,6 @@
   }
 
   /* ===========================================================
-     4. DARK MODE TOGGLE
-     =========================================================== */
-  var isDark = false;
-
-  function applyTheme(dark) {
-    isDark = dark;
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-
-    // Update topbar icon
-    var moonIcon = document.getElementById('darkModeIcon');
-    if (moonIcon) {
-      moonIcon.setAttribute('data-lucide', dark ? 'sun' : 'moon');
-    }
-
-    // Update settings toggle
-    var settingsToggle = document.getElementById('darkModeToggleSettings');
-    if (settingsToggle) {
-      settingsToggle.classList.toggle('on', dark);
-    }
-
-    // Re-render icons after updating data-lucide attributes
-    initIcons();
-
-    // Persist preference
-    try { localStorage.setItem('navcalc-theme', dark ? 'dark' : 'light'); } catch (e) {}
-  }
-
-  function toggleDarkMode() {
-    applyTheme(!isDark);
-  }
-
-  // Bind topbar toggle
-  var darkModeBtn = document.getElementById('darkModeToggleBtn');
-  if (darkModeBtn) { darkModeBtn.addEventListener('click', toggleDarkMode); }
-
-  // Bind settings toggle
-  var settingsToggle = document.getElementById('darkModeToggleSettings');
-  if (settingsToggle) { settingsToggle.addEventListener('click', toggleDarkMode); }
-
-  // Restore saved theme
-  try {
-    var savedTheme = localStorage.getItem('navcalc-theme');
-    if (savedTheme === 'dark') { applyTheme(true); }
-  } catch (e) {}
-
-  /* ===========================================================
      5. AUXILIARY BUTTON BINDINGS
      Topbar buttons trigger the same handlers as the original IDs
      in projectManager.js. We proxy the project section buttons.
