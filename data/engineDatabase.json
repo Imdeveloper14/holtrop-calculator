@@ -1,0 +1,23 @@
+[
+  {
+    "manufacturer": "Wärtsilä",
+    "model": "12V31DF",
+    "mcr": 7200,
+    "sfoc": 175,
+    "type": "MDO"
+  },
+  {
+    "manufacturer": "MAN Energy Solutions",
+    "model": "9S50ME-C9",
+    "mcr": 9900,
+    "sfoc": 165,
+    "type": "HFO"
+  },
+  {
+    "manufacturer": "Caterpillar",
+    "model": "3516C",
+    "mcr": 2240,
+    "sfoc": 195,
+    "type": "MDO"
+  }
+]

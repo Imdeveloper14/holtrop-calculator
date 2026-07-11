@@ -21,6 +21,29 @@ document.getElementById("appType").addEventListener("change", (e) => {
     }
 });
 
+document.getElementById("propBSeriesType").addEventListener("change", (e) => {
+    const val = e.target.value;
+    if (val === "B3-50") {
+        document.getElementById("propBlades").value = 3;
+        document.getElementById("propEAR").value = 0.50;
+    } else if (val === "B4-55") {
+        document.getElementById("propBlades").value = 4;
+        document.getElementById("propEAR").value = 0.55;
+    } else if (val === "B4-70") {
+        document.getElementById("propBlades").value = 4;
+        document.getElementById("propEAR").value = 0.70;
+    } else if (val === "B5-75") {
+        document.getElementById("propBlades").value = 5;
+        document.getElementById("propEAR").value = 0.75;
+    } else if (val === "B6-80") {
+        document.getElementById("propBlades").value = 6;
+        document.getElementById("propEAR").value = 0.80;
+    } else if (val === "B7-85") {
+        document.getElementById("propBlades").value = 7;
+        document.getElementById("propEAR").value = 0.85;
+    }
+});
+
 document.getElementById("addAppBtn").addEventListener("click", () => {
     const select = document.getElementById("appType");
     const name = select.options[select.selectedIndex].text.split(" (")[0];
@@ -104,6 +127,7 @@ propRPM: Number(document.getElementById("propRPM").value),
 wakeFraction: Number(document.getElementById("wakeFraction").value),
 thrustDeduction: Number(document.getElementById("thrustDeduction").value),
 rotativeEfficiency: Number(document.getElementById("rotativeEfficiency").value),
+propBSeriesType: document.getElementById("propBSeriesType").value,
 
 speed:Number(document.getElementById("speed").value)
 
@@ -187,6 +211,80 @@ const power =
 const propulsionData =
     propulsion(power);
 const propSelection = calculatePropellerSelection(vessel, total);
+const bseriesRes = calculateBSeriesPropeller(vessel, total);
+
+const engineInputs = {
+    mcr: Number(document.getElementById("engineMCR").value),
+    sfoc: Number(document.getElementById("engineSFOC").value),
+    numEngines: Number(document.getElementById("numEngines").value),
+    mechEfficiency: Number(document.getElementById("mechEfficiency").value),
+    fuelType: document.getElementById("fuelType").value,
+    fuelPrice: Number(document.getElementById("fuelPrice").value),
+    voyageDist: Number(document.getElementById("voyageDist").value)
+};
+const pb_kW = propulsionData.brakePower / 1000;
+const engineRes = calculateEngineSelection(pb_kW, vessel.speed, engineInputs);
+
+const envInputs = {
+    shipType: document.getElementById("envShipType").value,
+    gt: Number(document.getElementById("envGT").value),
+    dwt: Number(document.getElementById("envDWT").value),
+    vref: Number(document.getElementById("envVref").value),
+    mcr: Number(document.getElementById("envMEPower").value),
+    pAE: Number(document.getElementById("envAEPower").value),
+    sfoc: Number(document.getElementById("engineSFOC").value),
+    fuelType: document.getElementById("fuelType").value,
+    annualDist: Number(document.getElementById("envAnnualDist").value),
+    annualFuel: Number(document.getElementById("envAnnualFuel").value)
+};
+
+const seaStateInputs = {
+    seaState: Number(document.getElementById("seaState").value),
+    waveHeight: Number(document.getElementById("waveHeight").value),
+    wavePeriod: Number(document.getElementById("wavePeriod").value),
+    waveDir: Number(document.getElementById("waveDir").value),
+    encounterAngle: Number(document.getElementById("encounterAngle").value),
+    waveSpectrum: document.getElementById("waveSpectrum").value
+};
+
+const eexiRes = calculateEEXI(vessel, envInputs);
+const ciiRes = calculateCII(vessel, envInputs);
+const emissionRes = calculateEmissions(engineRes.fc_kgh, envInputs.fuelType);
+const waveRes = calculateAddedWaveResistance(vessel, total, seaStateInputs);
+
+if (!eexiRes.passed) {
+    console.warn("IMO EEXI Compliance Warning: Attained EEXI exceeds Required EEXI!");
+}
+
+if (waveRes.warning) {
+    console.warn("Wave Resistance Warning: " + waveRes.warning);
+}
+
+const voyageInputs = {
+    voyageDist: Number(document.getElementById("voyageDistInput").value),
+    speed: Number(document.getElementById("voyageSpeed").value),
+    currentSpeed: Number(document.getElementById("currentSpeed").value),
+    currentDir: Number(document.getElementById("currentDir").value),
+    airTemp: Number(document.getElementById("airTemp").value),
+    waterTemp: Number(document.getElementById("waterTemp").value),
+    waveHeight: Number(document.getElementById("waveHeight").value),
+    wavePeriod: Number(document.getElementById("wavePeriod").value),
+    encounterAngle: Number(document.getElementById("encounterAngle").value),
+    seaState: Number(document.getElementById("seaState").value),
+    mcr: Number(document.getElementById("engineMCR").value),
+    sfoc: Number(document.getElementById("engineSFOC").value),
+    numEngines: Number(document.getElementById("numEngines").value),
+    mechEfficiency: Number(document.getElementById("mechEfficiency").value),
+    fuelPrice: Number(document.getElementById("fuelPrice").value),
+    fuelType: document.getElementById("fuelType").value
+};
+
+const voyRes = calculateVoyagePerformance(vessel, total, voyageInputs);
+
+if (voyRes.err) {
+    console.error("Voyage performance error: " + voyRes.err);
+}
+
 // Display Results
 
 document.getElementById("reResult").textContent =
@@ -258,7 +356,89 @@ document.getElementById("propTorqueResult").textContent = (propSelection.torque 
 document.getElementById("propEtaOResult2").textContent = propSelection.etaO.toFixed(3);
 document.getElementById("propPCResult").textContent = propSelection.PC.toFixed(3);
 
-drawOpenWaterChart(vessel, propSelection.J);
+document.getElementById("perfBSeriesName").textContent = vessel.propBSeriesType;
+document.getElementById("perfKT").textContent = bseriesRes.KT.toFixed(4);
+document.getElementById("perf10KQ").textContent = (bseriesRes.KQ * 10).toFixed(4);
+document.getElementById("perfEtaO").textContent = bseriesRes.etaO.toFixed(3);
+document.getElementById("perfThrust").textContent = (bseriesRes.thrust / 1000).toFixed(2);
+document.getElementById("perfTorque").textContent = (bseriesRes.torque / 1000).toFixed(2);
+document.getElementById("perfCavitation").textContent = bseriesRes.cavitationStatus;
+
+document.getElementById("installedPower").textContent = engineRes.totalMcr.toFixed(0) + " kW";
+document.getElementById("engineLoad").textContent = engineRes.load.toFixed(1) + " %";
+document.getElementById("engineWarning").textContent = engineRes.warning;
+document.getElementById("fuelKgh").textContent = engineRes.fc_kgh.toFixed(1) + " kg/h";
+document.getElementById("fuelTonday").textContent = engineRes.fc_day.toFixed(2) + " t/day";
+document.getElementById("voyageFuel").textContent = engineRes.voyageFuel.toFixed(2) + " tons";
+document.getElementById("co2Emissions").textContent = engineRes.co2_kgh.toFixed(1) + " kg/h";
+document.getElementById("dailyFuelCost").textContent = "$ " + engineRes.dailyCost.toFixed(2);
+
+document.getElementById("attainedEEXI").textContent = eexiRes.attained.toFixed(3) + " gCO2/t-nm";
+document.getElementById("requiredEEXI").textContent = eexiRes.required.toFixed(3) + " gCO2/t-nm";
+document.getElementById("eexiStatus").textContent = eexiRes.passed ? "COMPLIANT" : "NON-COMPLIANT";
+document.getElementById("eexiStatus").style.color = eexiRes.passed ? "#2e7d32" : "#f44336";
+
+document.getElementById("attainedCII").textContent = ciiRes.attained.toFixed(3) + " gCO2/t-nm";
+document.getElementById("requiredCII").textContent = ciiRes.required.toFixed(3) + " gCO2/t-nm";
+const ciiEl = document.getElementById("ciiRating");
+ciiEl.textContent = ciiRes.rating;
+ciiEl.style.backgroundColor = ciiRes.color;
+ciiEl.style.color = "#ffffff";
+
+const tooltips = {
+    "A": "Excellent environmental performance (well above IMO target)",
+    "B": "Better than required efficiency",
+    "C": "Meets IMO requirements",
+    "D": "Improvement required; may require corrective measures if sustained",
+    "E": "Poor performance; mandatory corrective action plan required under IMO regulations"
+};
+ciiEl.title = tooltips[ciiRes.rating] || "";
+
+document.getElementById("envCO2").textContent = emissionRes.co2.toFixed(2);
+document.getElementById("envNOx").textContent = emissionRes.nox.toFixed(2);
+document.getElementById("envSOx").textContent = emissionRes.sox.toFixed(2);
+document.getElementById("envPM").textContent = emissionRes.pm.toFixed(2);
+
+document.getElementById("calmResistance").textContent = (total.Rt / 1000).toFixed(2);
+document.getElementById("addedWaveResistance").textContent = (waveRes.Raw / 1000).toFixed(2);
+document.getElementById("totalResistanceWaves").textContent = (waveRes.RtWaves / 1000).toFixed(2);
+
+document.getElementById("calmPower").textContent = (total.effectivePower / 1000).toFixed(2);
+document.getElementById("requiredPowerWaves").textContent = (waveRes.peWaves / 1000).toFixed(2);
+
+let seaMargin = 0;
+if (total.effectivePower > 0) {
+    seaMargin = ((waveRes.peWaves - total.effectivePower) / total.effectivePower) * 100;
+}
+document.getElementById("seaMargin").textContent = seaMargin.toFixed(1) + " %";
+document.getElementById("speedLossWaves").textContent = waveRes.speedLoss.toFixed(1) + " %";
+document.getElementById("addFuelConsumption").textContent = waveRes.addFuelPct.toFixed(1) + " %";
+
+drawEmissionBreakdownChart(emissionRes);
+drawWaveResistanceCharts(vessel, total, seaStateInputs);
+drawVoyageCharts(vessel, total, voyageInputs);
+
+document.getElementById("voyTimeResult").textContent = voyRes.time.toFixed(1) + " hours";
+document.getElementById("voySogResult").textContent = voyRes.sog.toFixed(2) + " knots";
+document.getElementById("voySeaMargin").textContent = voyRes.seaMargin.toFixed(1) + " %";
+document.getElementById("voyWeatherMargin").textContent = voyRes.weatherMargin.toFixed(1) + " %";
+document.getElementById("voyFuelResult").textContent = voyRes.fuel.toFixed(2) + " tons";
+document.getElementById("voyCostResult").textContent = "$ " + voyRes.cost.toFixed(2);
+document.getElementById("voyCO2").textContent = voyRes.co2.toFixed(3);
+document.getElementById("voyNOx").textContent = voyRes.nox.toFixed(4);
+document.getElementById("voySOx").textContent = voyRes.sox.toFixed(4);
+document.getElementById("voyPM").textContent = voyRes.pm.toFixed(4);
+
+drawOpenWaterChart(vessel, bseriesRes.J);
+
+// Hook up export click handler
+const expVoyBtn = document.getElementById("exportVoyageCsvBtn");
+if (expVoyBtn) {
+    // Remove previous listeners if any, or overwrite onclick
+    expVoyBtn.onclick = () => {
+        window.exportVoyageCsv(vessel, total, voyageInputs);
+    };
+}
 
 document.getElementById("cpCoeff").textContent =
     coeff.Cp.toFixed(3);
@@ -360,6 +540,19 @@ function drawResistanceChart(breakdown) {
         resistanceChart.destroy();
     }
 
+    const dataValues = [
+        Number(breakdown.friction / 1000),
+        Number(breakdown.viscous / 1000),
+        Number(breakdown.wave / 1000),
+        Number(breakdown.bulb / 1000),
+        Number(breakdown.transom / 1000),
+        Number(breakdown.appendage / 1000),
+        Number(breakdown.air / 1000),
+        Number(breakdown.correlation / 1000)
+    ];
+
+    const scale = window.getDynamicScale(dataValues);
+
     resistanceChart = new Chart(ctx, {
 
         type: "bar",
@@ -390,16 +583,7 @@ function drawResistanceChart(breakdown) {
                         "#607D8B",
                         "#E91E63"
                 ],
-                data: [
-                    Number(breakdown.friction / 1000),
-                    Number(breakdown.viscous / 1000),
-                    Number(breakdown.wave / 1000),
-                    Number(breakdown.bulb / 1000),
-                    Number(breakdown.transom / 1000),
-                    Number(breakdown.appendage / 1000),
-                    Number(breakdown.air / 1000),
-                    Number(breakdown.correlation / 1000)
-                ]
+                data: dataValues
 
             }]
 
@@ -421,7 +605,14 @@ function drawResistanceChart(breakdown) {
 
             scales:{
                 y: {
-                    beginAtZero: true
+                    min: scale.min,
+                    max: scale.max,
+                    suggestedMax: scale.suggestedMax,
+                    ticks: {
+                        callback: function(value) {
+                            return window.formatChartTicks(value, 'resistance');
+                        }
+                    }
                 }
             }
 

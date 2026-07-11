@@ -1,10 +1,11 @@
-function totalResistance(vessel, friction, viscousResistance, wave, appendageResistance, airResistance, correlationAllowance, bulbResistance, transomResistance) {
+function totalResistance(vessel, friction, viscousResistance, wave, appendageResistance, airResistance, correlationAllowance, bulbResistance, transomResistance, addedWaveResistance) {
 
     const Rb = bulbResistance || 0;
     const Rtr = transomResistance || 0;
     const Rapp = appendageResistance || 0;
     const Ra = airResistance || 0;
     const RA = correlationAllowance || 0;
+    const Raw = addedWaveResistance || 0;
 
     const Rt =
         viscousResistance +
@@ -13,7 +14,8 @@ function totalResistance(vessel, friction, viscousResistance, wave, appendageRes
         Ra +
         RA +
         Rb +
-        Rtr;
+        Rtr +
+        Raw;
 
     const speedMS = vessel.speed * 0.514444;
 

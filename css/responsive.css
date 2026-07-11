@@ -1,0 +1,43 @@
+/* =============================================================
+   responsive.css — Breakpoint Adaptations
+   ============================================================= */
+
+/* ---- Large Desktop (1600px+) ---- */
+@media (min-width: 1600px) {
+  :root { --sidebar-w: 256px; }
+  .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+  .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---- Standard Desktop (1280px–1600px) ---- */
+@media (max-width: 1280px) {
+  .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+  .form-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .results-kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---- Laptop (1024px–1280px) ---- */
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 200px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-grid-2 { grid-template-columns: 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr; }
+  .card-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .results-kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---- Tablet (768px–1024px) ---- */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; --topbar-h: 56px; }
+  .sidebar { display: none; }
+  .workspace { padding: 16px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: 1fr; }
+  .results-kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .topbar-logo { width: 200px; min-width: 200px; }
+  .topbar-project-name { max-width: 120px; }
+  .quick-actions { flex-direction: column; }
+}

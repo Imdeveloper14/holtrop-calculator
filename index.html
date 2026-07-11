@@ -1,657 +1,1656 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NavCalc Pro &mdash; Holtrop &amp; Mennen Naval Architecture Calculator</title>
+  <meta name="description" content="Professional ship resistance, power, and performance analysis tool based on the Holtrop &amp; Mennen method.">
 
-    <title>Holtrop & Mennen Resistance Calculator</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/forms.css">
-    <link rel="stylesheet" href="css/tables.css">
-    <link rel="stylesheet" href="css/charts.css">
-    <link rel="stylesheet" href="css/report.css">
-    <link rel="stylesheet" href="css/responsive.css">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tables.css">
+  <link rel="stylesheet" href="css/charts.css">
+  <link rel="stylesheet" href="css/report.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 
 <body>
+<div class="app-container">
 
-    <header>
-        <h1>Holtrop & Mennen Resistance Calculator</h1>
-        <p>Primalisometric Consultancy</p>
-    </header>
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
 
-    <main class="dashboard">
+    <!-- Logo -->
+    <div class="topbar-logo">
+      <div class="logo-icon-box">
+        <i data-lucide="anchor" style="width:16px;height:16px;color:white;stroke-width:2.5;"></i>
+      </div>
+      <div class="logo-text-block">
+        <div class="logo-name">NavCalc Pro</div>
+        <div class="logo-sub">Holtrop &amp; Mennen</div>
+      </div>
+    </div>
 
-        <aside class="sidebar">
+    <!-- Project name -->
+    <div class="topbar-project">
+      <i data-lucide="folder-open" class="topbar-project-icon"></i>
+      <input type="text" class="topbar-project-name" id="projectNameDisplay" value="Untitled Project" title="Click to rename project">
+    </div>
 
-            <h2>Input Modules</h2>
+    <!-- File actions -->
+    <div class="topbar-actions">
+      <button class="topbar-btn icon-only" id="newProjectBtn" title="New Project">
+        <i data-lucide="file-plus-2" style="width:15px;height:15px;"></i>
+      </button>
+      <button class="topbar-btn icon-only" id="openProjectBtn" title="Open Project">
+        <i data-lucide="folder-open" style="width:15px;height:15px;"></i>
+      </button>
+      <button class="topbar-btn icon-only" id="saveProjectBtn" title="Save Project">
+        <i data-lucide="save" style="width:15px;height:15px;"></i>
+      </button>
+      <button class="topbar-btn icon-only" id="exportJsonBtn" title="Export JSON">
+        <i data-lucide="download" style="width:15px;height:15px;"></i>
+      </button>
+      <input type="file" id="projectFileInput" style="display:none;" accept=".json">
+    </div>
 
-            <button>Principal Particulars</button>
-            <button>Hull Geometry</button>
-            <button>Appendages</button>
-            <button>Environment</button>
-            <button>Propulsion</button>
+    <!-- Calculate & Report -->
+    <div class="topbar-actions" style="border-left: 1px solid var(--color-border); border-right: none; padding-left: 10px;">
+      <button class="topbar-btn btn-calc" id="calculateBtn">
+        <i data-lucide="play-circle" style="width:15px;height:15px;"></i>
+        Calculate
+      </button>
+      <button class="topbar-btn btn-primary" id="generateReportBtn">
+        <i data-lucide="file-down" style="width:15px;height:15px;"></i>
+        Report
+      </button>
+    </div>
 
-            <hr>
+    <!-- Right controls -->
+    <div class="topbar-right">
+      <button class="topbar-btn icon-only" id="darkModeToggleBtn" title="Toggle Dark Mode">
+        <i data-lucide="moon" style="width:15px;height:15px;" id="darkModeIcon"></i>
+      </button>
+      <div class="topbar-divider"></div>
+      <div class="user-avatar" title="Primalisometric Consultancy">P</div>
+    </div>
 
-            <button id="calculateBtn">Calculate Resistance</button>
-            <button id="generateReportBtn">Generate PDF Report</button>
+  </header>
 
-            <hr>
+  <!-- ===== APP BODY ===== -->
+  <div class="app-body">
 
-            <h3>Project Actions</h3>
-            <button id="newProjectBtn">New Project</button>
-            <button id="openProjectBtn">Open Project</button>
-            <button id="saveProjectBtn">Save Project</button>
-            <button id="exportJsonBtn">Export JSON</button>
-            <input type="file" id="projectFileInput" style="display: none;" accept=".json">
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar" id="mainSidebar">
 
-        </aside>
+      <div class="sidebar-section-label">Main</div>
 
-        <section class="workspace">
+      <button class="nav-item active" data-nav="dashboardSection">
+        <i data-lucide="layout-dashboard" class="nav-icon"></i>
+        <span class="nav-label">Dashboard</span>
+      </button>
 
-            <!-- Principal Particulars -->
+      <button class="nav-item" data-nav="projectSection">
+        <i data-lucide="folder-open" class="nav-icon"></i>
+        <span class="nav-label">Project</span>
+      </button>
 
-            <section id="principalSection">
+      <div class="sidebar-section-label">Analysis</div>
 
-                <div class="card">
+      <button class="nav-item" data-nav="vesselSection">
+        <i data-lucide="ship" class="nav-icon"></i>
+        <span class="nav-label">Vessel Inputs</span>
+      </button>
 
-                    <h2>Principal Particulars</h2>
+      <button class="nav-item" data-nav="resistanceSection">
+        <i data-lucide="trending-up" class="nav-icon"></i>
+        <span class="nav-label">Resistance</span>
+      </button>
 
-                    <div class="form-grid">
+      <button class="nav-item" data-nav="propulsionSection">
+        <i data-lucide="cog" class="nav-icon"></i>
+        <span class="nav-label">Propulsion</span>
+      </button>
 
-                        <label>Length Between Perpendiculars (LPP)</label>
-                        <input id="lpp" type="number" step="0.01">
+      <button class="nav-item" data-nav="engineSectionNav">
+        <i data-lucide="wrench" class="nav-icon"></i>
+        <span class="nav-label">Engine &amp; Fuel</span>
+      </button>
 
-                        <label>Length Waterline (LWL)</label>
-                        <input id="lwl" type="number" step="0.01">
+      <button class="nav-item" data-nav="envSectionNav">
+        <i data-lucide="leaf" class="nav-icon"></i>
+        <span class="nav-label">Environmental</span>
+      </button>
 
-                        <label>Beam (B)</label>
-                        <input id="beam" type="number" step="0.01">
+      <button class="nav-item" data-nav="voyageSectionNav">
+        <i data-lucide="navigation" class="nav-icon"></i>
+        <span class="nav-label">Voyage Analysis</span>
+      </button>
 
-                        <label>Draft (T)</label>
-                        <input id="draft" type="number" step="0.01">
+      <div class="sidebar-section-label">Advanced</div>
 
-                        <label>Displacement (Δ)</label>
-                        <input id="disp" type="number" step="0.01">
+      <button class="nav-item" data-nav="performanceSectionNav">
+        <i data-lucide="activity" class="nav-icon"></i>
+        <span class="nav-label">Performance Curves</span>
+      </button>
 
-                        <label>Block Coefficient (Cb)</label>
-                        <input id="cb" type="number" step="0.001">
+      <button class="nav-item" data-nav="optimizationSectionNav">
+        <i data-lucide="target" class="nav-icon"></i>
+        <span class="nav-label">Hull Optimization</span>
+      </button>
 
-                        <label>Midship Coefficient (Cm)</label>
-                        <input id="cm" type="number" step="0.001">
+      <button class="nav-item" data-nav="batchSectionNav">
+        <i data-lucide="layers" class="nav-icon"></i>
+        <span class="nav-label">Batch Analysis</span>
+      </button>
 
-                        <label>Waterplane Coefficient (Cwp)</label>
-                        <input id="cwp" type="number" step="0.001">
+      <button class="nav-item" data-nav="reportsSectionNav">
+        <i data-lucide="file-text" class="nav-icon"></i>
+        <span class="nav-label">Reports</span>
+      </button>
 
-                        <label>LCB (%LPP from Midship)</label>
-                        <input id="lcb" type="number" step="0.01">
+      <button class="nav-item" data-nav="settingsSection">
+        <i data-lucide="settings-2" class="nav-icon"></i>
+        <span class="nav-label">Settings</span>
+      </button>
 
-                        <label>Bulb Area (m²)</label>
-                        <input id="abt" type="number" step="0.01" value="0">
+    </nav>
 
-                        <label>Bulb Center Height (m)</label>
-                        <input id="hb" type="number" step="0.01" value="0">
+    <!-- ===== WORKSPACE ===== -->
+    <main class="workspace" id="mainWorkspace">
 
-                        <label>Immersed Transom Area (m²)</label>
-                        <input id="at" type="number" step="0.01" value="0">
+      <!-- ============================================================
+           SECTION: DASHBOARD
+           ============================================================ -->
+      <section class="workspace-section active" id="dashboardSection">
+        <div class="section-header">
+          <h1 class="section-title">Dashboard</h1>
+          <p class="section-subtitle">Key performance indicators from the last calculation</p>
+        </div>
 
-                        <label>Speed (knots)</label>
-                        <input id="speed" type="number" step="0.1">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card" style="--kpi-accent:#1565C0; animation-delay:0ms;">
+            <div class="kpi-label">
+              <i data-lucide="trending-up" style="width:13px;height:13px;"></i>
+              Total Resistance
+            </div>
+            <div class="kpi-value" id="kpi-rt">&mdash;</div>
+            <div class="kpi-unit">kN</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#00897B; animation-delay:40ms;">
+            <div class="kpi-label">
+              <i data-lucide="zap" style="width:13px;height:13px;"></i>
+              Effective Power
+            </div>
+            <div class="kpi-value" id="kpi-pe">&mdash;</div>
+            <div class="kpi-unit">kW</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#7B1FA2; animation-delay:80ms;">
+            <div class="kpi-label">
+              <i data-lucide="activity" style="width:13px;height:13px;"></i>
+              Brake Power
+            </div>
+            <div class="kpi-value" id="kpi-pb">&mdash;</div>
+            <div class="kpi-unit">kW</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#E65100; animation-delay:120ms;">
+            <div class="kpi-label">
+              <i data-lucide="droplets" style="width:13px;height:13px;"></i>
+              Fuel Consumption
+            </div>
+            <div class="kpi-value" id="kpi-fuel">&mdash;</div>
+            <div class="kpi-unit">tons/day</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#2E7D32; animation-delay:160ms;">
+            <div class="kpi-label">
+              <i data-lucide="cloud" style="width:13px;height:13px;"></i>
+              CO&#x2082; Emissions
+            </div>
+            <div class="kpi-value" id="kpi-co2">&mdash;</div>
+            <div class="kpi-unit">kg/h</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#1565C0; animation-delay:200ms;">
+            <div class="kpi-label">
+              <i data-lucide="bar-chart-2" style="width:13px;height:13px;"></i>
+              Attained EEXI
+            </div>
+            <div class="kpi-value" id="kpi-eexi">&mdash;</div>
+            <div class="kpi-unit">gCO&#x2082;/t&middot;nm</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#00ACC1; animation-delay:240ms;">
+            <div class="kpi-label">
+              <i data-lucide="star" style="width:13px;height:13px;"></i>
+              CII Rating
+            </div>
+            <div class="kpi-value kpi-value-sm" id="kpi-cii">&mdash;</div>
+            <div class="kpi-unit">Annual CII</div>
+          </div>
+          <div class="kpi-card" style="--kpi-accent:#F9A825; animation-delay:280ms;">
+            <div class="kpi-label">
+              <i data-lucide="check-circle-2" style="width:13px;height:13px;"></i>
+              Applicability
+            </div>
+            <div class="kpi-value kpi-value-sm" id="kpi-applicability">&mdash;</div>
+            <div class="kpi-unit">Holtrop validity</div>
+          </div>
+        </div>
 
-                        <button id="calculateBtnWorkspace">
-                            Calculate Resistance
-                        </button>
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button class="quick-action-btn" id="calculateBtnWorkspace">
+            <i data-lucide="play-circle" style="width:17px;height:17px;"></i>
+            Run Calculation
+          </button>
+          <button class="quick-action-btn secondary" onclick="window.switchNav('performanceSectionNav')">
+            <i data-lucide="activity" style="width:17px;height:17px;"></i>
+            Speed Curves
+          </button>
+          <button class="quick-action-btn secondary" onclick="window.switchNav('optimizationSectionNav')">
+            <i data-lucide="target" style="width:17px;height:17px;"></i>
+            Optimization
+          </button>
+          <button class="quick-action-btn secondary" onclick="window.switchNav('batchSectionNav')">
+            <i data-lucide="layers" style="width:17px;height:17px;"></i>
+            Batch Analysis
+          </button>
+        </div>
 
-                    </div>
+        <!-- Applicability Panel -->
+        <div class="card">
+          <div class="card-header">
+            <i data-lucide="check-circle-2" class="card-header-icon"></i>
+            <h3 class="card-title">Applicability Check &mdash; Holtrop &amp; Mennen Validity Limits</h3>
+          </div>
+          <div class="card-body">
+            <ul id="validationList" class="validation-list"></ul>
+          </div>
+        </div>
+      </section>
 
+      <!-- ============================================================
+           SECTION: PROJECT
+           ============================================================ -->
+      <section class="workspace-section" id="projectSection">
+        <div class="section-header">
+          <h1 class="section-title">Project Management</h1>
+          <p class="section-subtitle">Save, load, and export your analysis projects</p>
+        </div>
+
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-header">
+              <i data-lucide="folder-open" class="card-header-icon"></i>
+              <h3 class="card-title">Project Actions</h3>
+            </div>
+            <div class="card-body">
+              <div class="action-list">
+                <button class="action-btn" id="newProjectBtnProj">
+                  <i data-lucide="file-plus-2" style="width:17px;height:17px;color:var(--color-primary);"></i>
+                  New Project
+                </button>
+                <button class="action-btn" id="openProjectBtnProj">
+                  <i data-lucide="folder-open" style="width:17px;height:17px;color:var(--color-primary);"></i>
+                  Open Project
+                </button>
+                <button class="action-btn" id="saveProjectBtnProj">
+                  <i data-lucide="save" style="width:17px;height:17px;color:var(--color-primary);"></i>
+                  Save to Browser
+                </button>
+                <button class="action-btn" id="exportJsonBtnProj">
+                  <i data-lucide="download" style="width:17px;height:17px;color:var(--color-primary);"></i>
+                  Export as JSON
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <i data-lucide="info" class="card-header-icon"></i>
+              <h3 class="card-title">About NavCalc Pro</h3>
+            </div>
+            <div class="card-body">
+              <p style="color:var(--color-text-3);font-size:var(--fs-sm);line-height:1.7;">
+                <strong style="color:var(--color-text-1);">NavCalc Pro — Version 2.0</strong><br>
+                Professional naval architecture analysis tool implementing the<br>
+                <em>Holtrop &amp; Mennen (1982/1984)</em> ship resistance prediction method.<br><br>
+                Modules: Resistance &bull; Propulsion &bull; Engine &amp; Fuel &bull;<br>
+                Environmental (EEXI / CII) &bull; Voyage &bull; Optimization &bull; Batch Analysis<br><br>
+                &copy; 2026 Primalisometric Consultancy
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: VESSEL INPUTS
+           ============================================================ -->
+      <section class="workspace-section" id="vesselSection">
+        <div class="section-header">
+          <h1 class="section-title">Vessel Inputs</h1>
+          <p class="section-subtitle">Principal particulars, hull geometry, appendages &amp; environment</p>
+        </div>
+
+        <!-- Principal Particulars -->
+        <div class="collapsible-card" id="principalSection">
+          <div class="collapsible-header open" data-target="principalBody">
+            <div class="collapsible-title">
+              <i data-lucide="ruler" class="card-header-icon"></i>
+              Principal Particulars
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="principalBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="lpp">LPP &ndash; Length Between Perp. <span class="unit-badge">m</span></label>
+                <input id="lpp" type="number" step="0.01" class="form-input" placeholder="e.g. 120.0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="lwl">LWL &ndash; Waterline Length <span class="unit-badge">m</span></label>
+                <input id="lwl" type="number" step="0.01" class="form-input" placeholder="e.g. 122.0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="beam">B &ndash; Beam <span class="unit-badge">m</span></label>
+                <input id="beam" type="number" step="0.01" class="form-input" placeholder="e.g. 18.0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="draft">T &ndash; Draft <span class="unit-badge">m</span></label>
+                <input id="draft" type="number" step="0.01" class="form-input" placeholder="e.g. 5.5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="disp">&#x394; &ndash; Displacement <span class="unit-badge">m&sup3;</span></label>
+                <input id="disp" type="number" step="0.01" class="form-input" placeholder="e.g. 6000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cb">C<sub>b</sub> &ndash; Block Coefficient</label>
+                <input id="cb" type="number" step="0.001" class="form-input" placeholder="0.50 &ndash; 0.85">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cm">C<sub>m</sub> &ndash; Midship Coefficient</label>
+                <input id="cm" type="number" step="0.001" class="form-input" placeholder="0.90 &ndash; 0.99">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cwp">C<sub>wp</sub> &ndash; Waterplane Coefficient</label>
+                <input id="cwp" type="number" step="0.001" class="form-input" placeholder="e.g. 0.75">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="lcb">LCB <span class="unit-badge">%LPP from midship</span></label>
+                <input id="lcb" type="number" step="0.01" class="form-input" placeholder="e.g. -1.5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="abt">Bulb Area (A<sub>BT</sub>) <span class="unit-badge">m&sup2;</span></label>
+                <input id="abt" type="number" step="0.01" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hb">Bulb Center Height (h<sub>B</sub>) <span class="unit-badge">m</span></label>
+                <input id="hb" type="number" step="0.01" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="at">Immersed Transom Area (A<sub>T</sub>) <span class="unit-badge">m&sup2;</span></label>
+                <input id="at" type="number" step="0.01" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="speed">Design Speed <span class="unit-badge">knots</span></label>
+                <input id="speed" type="number" step="0.1" class="form-input" placeholder="e.g. 15.0">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="calcFromVesselBtn">
+                <i data-lucide="play-circle" style="width:15px;height:15px;"></i>
+                Calculate Resistance
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appendages -->
+        <div class="collapsible-card" id="appendagesSection">
+          <div class="collapsible-header open" data-target="appendagesBody">
+            <div class="collapsible-title">
+              <i data-lucide="anchor" class="card-header-icon"></i>
+              Appendages
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="appendagesBody">
+            <div class="form-grid form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="appType">Appendage Type</label>
+                <select id="appType" class="form-select">
+                  <option value="Rudder behind Stern,1.40">Rudder behind Stern (1+k&#x2082; = 1.40)</option>
+                  <option value="Bilge Keels,1.40">Bilge Keels (1+k&#x2082; = 1.40)</option>
+                  <option value="Rudder behind Skeg,1.70">Rudder behind Skeg (1+k&#x2082; = 1.70)</option>
+                  <option value="Skeg,1.80">Skeg (1+k&#x2082; = 1.80)</option>
+                  <option value="Hull Bossings,2.00">Hull Bossings (1+k&#x2082; = 2.00)</option>
+                  <option value="Stabilizer Fins,2.80">Stabilizer Fins (1+k&#x2082; = 2.80)</option>
+                  <option value="Shafts,3.00">Shafts (1+k&#x2082; = 3.00)</option>
+                  <option value="Shaft Brackets,3.00">Shaft Brackets (1+k&#x2082; = 3.00)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="appArea">Wetted Area <span class="unit-badge">m&sup2;</span></label>
+                <input id="appArea" type="number" step="0.01" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="appK2">Form Factor (1+k&#x2082;)</label>
+                <input id="appK2" type="number" step="0.01" value="1.40" class="form-input">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" id="addAppBtn" type="button">
+                <i data-lucide="plus-circle" style="width:15px;height:15px;"></i>
+                Add Appendage
+              </button>
+            </div>
+            <div class="table-wrapper" style="margin-top:14px;">
+              <table id="appTable" class="data-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Wetted Area (m&sup2;)</th>
+                    <th>1+k&#x2082;</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="appTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Environment -->
+        <div class="collapsible-card" id="environmentSection">
+          <div class="collapsible-header open" data-target="environmentBody">
+            <div class="collapsible-title">
+              <i data-lucide="wind" class="card-header-icon"></i>
+              Environment &amp; Wind
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="environmentBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="rhoAir">Air Density (&rho;<sub>air</sub>) <span class="unit-badge">kg/m&sup3;</span></label>
+                <input id="rhoAir" type="number" step="0.001" value="1.225" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="windSpeed">Wind Speed <span class="unit-badge">knots</span></label>
+                <input id="windSpeed" type="number" step="0.1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="windDir">Wind Direction <span class="unit-badge">&deg; from bow</span></label>
+                <input id="windDir" type="number" step="1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="av">Frontal Area (A<sub>v</sub>) <span class="unit-badge">m&sup2;</span></label>
+                <input id="av" type="number" step="0.1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cdAir">Air Drag Coefficient (C<sub>d</sub>)</label>
+                <input id="cdAir" type="number" step="0.01" value="0.8" class="form-input">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION: RESISTANCE RESULTS
+           ============================================================ -->
+      <section class="workspace-section" id="resistanceSection">
+        <div class="section-header">
+          <h1 class="section-title">Resistance Results</h1>
+          <p class="section-subtitle">Holtrop &amp; Mennen resistance prediction at design speed</p>
+        </div>
+
+        <!-- Result KPI Row -->
+        <div class="results-kpi-row">
+          <div class="result-kpi-card primary">
+            <div class="result-kpi-label">Total Resistance</div>
+            <div class="result-kpi-value" id="rtResult">&mdash;</div>
+            <div class="result-kpi-unit">kN</div>
+          </div>
+          <div class="result-kpi-card success">
+            <div class="result-kpi-label">Effective Power</div>
+            <div class="result-kpi-value" id="peResult">&mdash;</div>
+            <div class="result-kpi-unit">kW</div>
+          </div>
+          <div class="result-kpi-card purple">
+            <div class="result-kpi-label">Delivered Power</div>
+            <div class="result-kpi-value" id="pdResult">&mdash;</div>
+            <div class="result-kpi-unit">kW</div>
+          </div>
+          <div class="result-kpi-card danger">
+            <div class="result-kpi-label">Brake Power</div>
+            <div class="result-kpi-value" id="pbResult">&mdash;</div>
+            <div class="result-kpi-unit">kW</div>
+          </div>
+        </div>
+
+        <div class="card-grid-2" style="margin-top:14px;">
+
+          <!-- Resistance Summary Table -->
+          <div class="card" id="resultsSection">
+            <div class="card-header">
+              <i data-lucide="list" class="card-header-icon"></i>
+              <h3 class="card-title">Resistance Breakdown</h3>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper" style="border:none;border-radius:0;">
+                <table id="resultsTable" class="data-table">
+                  <tr><th>Parameter</th><th>Value</th></tr>
+                  <tr><td>Reynolds Number</td><td id="reResult">&mdash;</td></tr>
+                  <tr><td>Froude Number</td><td id="fnResult">&mdash;</td></tr>
+                  <tr><td>ITTC Friction Coefficient (Cf)</td><td id="cfResult">&mdash;</td></tr>
+                  <tr><td>Friction Resistance (kN)</td><td id="rfResult">&mdash;</td></tr>
+                  <tr><td>Wetted Surface (m&sup2;)</td><td id="sResult">&mdash;</td></tr>
+                  <tr><td>Prismatic Coefficient (Cp)</td><td id="cpResult">&mdash;</td></tr>
+                  <tr><td>Form Factor (1+k&#x2081;)</td><td id="k1Result">&mdash;</td></tr>
+                  <tr><td>Viscous Resistance (kN)</td><td id="rvResult">&mdash;</td></tr>
+                  <tr><td>Wave Resistance (kN)</td><td id="rwResult">&mdash;</td></tr>
+                  <tr><td>Bulb Resistance (kN)</td><td id="rbResult">&mdash;</td></tr>
+                  <tr><td>Transom Resistance (kN)</td><td id="rtrResult">&mdash;</td></tr>
+                  <tr><td>Air Resistance (kN)</td><td id="raResult">&mdash;</td></tr>
+                  <tr><td>Appendage Resistance (kN)</td><td id="rappResult">&mdash;</td></tr>
+                  <tr><td>Correlation Allowance (kN)</td><td id="caResult">&mdash;</td></tr>
+                  <tr><td>Hull Efficiency (&eta;<sub>H</sub>)</td><td id="etaHResult">&mdash;</td></tr>
+                  <tr><td>Propeller Efficiency (&eta;<sub>O</sub>)</td><td id="etaOResult">&mdash;</td></tr>
+                  <tr><td>Holtrop c&#x2087;</td><td id="c7Result">&mdash;</td></tr>
+                  <tr><td>Result ID</td><td id="resultId">&mdash;</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hull Coefficients -->
+          <div class="card">
+            <div class="card-header">
+              <i data-lucide="grid-3x3" class="card-header-icon"></i>
+              <h3 class="card-title">Hull Coefficients</h3>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper" style="border:none;border-radius:0;">
+                <table class="data-table">
+                  <tr><th>Parameter</th><th>Value</th></tr>
+                  <tr><td>Prismatic Coefficient (Cp)</td><td id="cpCoeff">&mdash;</td></tr>
+                  <tr><td>L/B Ratio</td><td id="lbCoeff">&mdash;</td></tr>
+                  <tr><td>B/T Ratio</td><td id="btCoeff">&mdash;</td></tr>
+                  <tr><td>L/T Ratio</td><td id="ltCoeff">&mdash;</td></tr>
+                  <tr><td>Holtrop c&#x2087;</td><td id="c7Coeff">&mdash;</td></tr>
+                  <tr><td>Holtrop c&#x2081;&#x2085;</td><td id="c15Result">&mdash;</td></tr>
+                  <tr><td>Holtrop c&#x2081;&#x2086;</td><td id="c16Result">&mdash;</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Propeller Details -->
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header">
+              <i data-lucide="settings" class="card-header-icon"></i>
+              <h3 class="card-title">Propeller Performance</h3>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper" style="border:none;border-radius:0;">
+                <table class="data-table">
+                  <tr><th>Parameter</th><th>Value</th></tr>
+                  <tr><td>Advance Speed (Va) (m/s)</td><td id="propVaResult">&mdash;</td></tr>
+                  <tr><td>Advance Coefficient (J)</td><td id="propJResult">&mdash;</td></tr>
+                  <tr><td>Thrust Coefficient (KT)</td><td id="propKTResult">&mdash;</td></tr>
+                  <tr><td>Torque Coefficient (10&middot;KQ)</td><td id="prop10KQResult">&mdash;</td></tr>
+                  <tr><td>Thrust Required (kN)</td><td id="propThrustResult">&mdash;</td></tr>
+                  <tr><td>Torque (kNm)</td><td id="propTorqueResult">&mdash;</td></tr>
+                  <tr><td>Open Water Efficiency (&eta;<sub>O</sub>)</td><td id="propEtaOResult2">&mdash;</td></tr>
+                  <tr><td>Propulsive Coefficient (PC)</td><td id="propPCResult">&mdash;</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <i data-lucide="bar-chart-2" class="card-header-icon"></i>
+              <h3 class="card-title">B-Series Performance</h3>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper" style="border:none;border-radius:0;">
+                <table class="data-table">
+                  <tr><th>Parameter</th><th>Value</th></tr>
+                  <tr><td>Selected B-Series</td><td id="perfBSeriesName">&mdash;</td></tr>
+                  <tr><td>Thrust Coefficient (KT)</td><td id="perfKT">&mdash;</td></tr>
+                  <tr><td>Torque Coefficient (10&middot;KQ)</td><td id="perf10KQ">&mdash;</td></tr>
+                  <tr><td>Open-Water Efficiency (&eta;<sub>O</sub>)</td><td id="perfEtaO">&mdash;</td></tr>
+                  <tr><td>Thrust (kN)</td><td id="perfThrust">&mdash;</td></tr>
+                  <tr><td>Torque (kNm)</td><td id="perfTorque">&mdash;</td></tr>
+                  <tr><td>Cavitation Status</td><td id="perfCavitation">&mdash;</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resistance Chart -->
+        <div id="chartsSection" style="margin-top:14px;">
+          <div class="card-grid-2">
+            <div class="card">
+              <div class="card-header">
+                <i data-lucide="bar-chart-3" class="card-header-icon"></i>
+                <h3 class="card-title">Resistance Breakdown Chart</h3>
+              </div>
+              <div class="card-body chart-wrapper">
+                <canvas id="resistanceChart"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <i data-lucide="circle-dot" class="card-header-icon"></i>
+                <h3 class="card-title">Propeller Open Water Diagram</h3>
+              </div>
+              <div class="card-body chart-wrapper">
+                <canvas id="openWaterChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sea State Results -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header">
+            <i data-lucide="waves" class="card-header-icon"></i>
+            <h3 class="card-title">Sea State Performance</h3>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <tr><th colspan="2" class="table-section-header">Wave Resistance</th></tr>
+                <tr><td>Calm Water Resistance (kN)</td><td id="calmResistance">&mdash;</td></tr>
+                <tr><td>Added Wave Resistance Raw (kN)</td><td id="addedWaveResistance">&mdash;</td></tr>
+                <tr><td>Total Resistance in Waves (kN)</td><td id="totalResistanceWaves">&mdash;</td></tr>
+                <tr><th colspan="2" class="table-section-header">Power &amp; Efficiency in Waves</th></tr>
+                <tr><td>Calm Water Power (kW)</td><td id="calmPower">&mdash;</td></tr>
+                <tr><td>Required Power in Waves (kW)</td><td id="requiredPowerWaves">&mdash;</td></tr>
+                <tr><td>Sea Margin (%)</td><td id="seaMargin">&mdash;</td></tr>
+                <tr><td>Speed Loss (%)</td><td id="speedLossWaves">&mdash;</td></tr>
+                <tr><td>Additional Fuel Consumption (%)</td><td id="addFuelConsumption">&mdash;</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION: PROPULSION
+           ============================================================ -->
+      <section class="workspace-section" id="propulsionSection">
+        <div class="section-header">
+          <h1 class="section-title">Propulsion</h1>
+          <p class="section-subtitle">Wageningen B-Series propeller configuration &amp; performance</p>
+        </div>
+
+        <div class="collapsible-card" id="propellerSection">
+          <div class="collapsible-header open" data-target="propellerBody">
+            <div class="collapsible-title">
+              <i data-lucide="settings" class="card-header-icon"></i>
+              Propeller Selection &amp; Configuration
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="propellerBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="propBSeriesType">B-Series Type</label>
+                <select id="propBSeriesType" class="form-select">
+                  <option value="B4-55">B4-55 (Standard 4-bladed)</option>
+                  <option value="B3-50">B3-50</option>
+                  <option value="B4-70">B4-70</option>
+                  <option value="B5-75">B5-75</option>
+                  <option value="B6-80">B6-80</option>
+                  <option value="B7-85">B7-85</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="numPropellers">Number of Propellers</label>
+                <input id="numPropellers" type="number" value="1" min="1" step="1" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="propDiameter">Diameter <span class="unit-badge">m</span></label>
+                <input id="propDiameter" type="number" step="0.05" value="4.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="propPitch">Pitch Ratio (P/D)</label>
+                <input id="propPitch" type="number" step="0.01" value="1.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="propEAR">Expanded Area Ratio (EAR)</label>
+                <input id="propEAR" type="number" step="0.05" value="0.55" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="propBlades">Number of Blades</label>
+                <input id="propBlades" type="number" value="4" min="2" step="1" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="propRPM">Shaft RPM</label>
+                <input id="propRPM" type="number" step="1" value="120" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="wakeFraction">Wake Fraction (w)</label>
+                <input id="wakeFraction" type="number" step="0.01" value="0.25" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="thrustDeduction">Thrust Deduction (t)</label>
+                <input id="thrustDeduction" type="number" step="0.01" value="0.18" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rotativeEfficiency">Relative Rotative Efficiency (&eta;<sub>R</sub>)</label>
+                <input id="rotativeEfficiency" type="number" step="0.01" value="1.0" class="form-input">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: ENGINE & FUEL
+           ============================================================ -->
+      <section class="workspace-section" id="engineSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Engine &amp; Fuel</h1>
+          <p class="section-subtitle">Engine selection, fuel consumption, and operating cost analysis</p>
+        </div>
+
+        <div class="collapsible-card" id="engineSection">
+          <div class="collapsible-header open" data-target="engineBody">
+            <div class="collapsible-title">
+              <i data-lucide="wrench" class="card-header-icon"></i>
+              Engine Configuration
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="engineBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="engineSelect">Engine Database</label>
+                <select id="engineSelect" class="form-select">
+                  <option value="manual">Manual Entry</option>
+                  <option value="wartsila">W&auml;rtsil&auml; 12V31DF (7200 kW)</option>
+                  <option value="man">MAN 9S50ME-C9 (9900 kW)</option>
+                  <option value="cat">Caterpillar 3516C (2240 kW)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="engineMan">Manufacturer</label>
+                <input id="engineMan" type="text" placeholder="MAN" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="engineModel">Model</label>
+                <input id="engineModel" type="text" placeholder="9S50ME" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="engineMCR">MCR per Engine <span class="unit-badge">kW</span></label>
+                <input id="engineMCR" type="number" step="100" value="5000" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="engineSFOC">SFOC <span class="unit-badge">g/kWh</span></label>
+                <input id="engineSFOC" type="number" step="1" value="190" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="numEngines">Number of Engines</label>
+                <input id="numEngines" type="number" value="1" min="1" step="1" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="mechEfficiency">Mechanical Efficiency</label>
+                <input id="mechEfficiency" type="number" step="0.01" value="0.97" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fuelType">Fuel Type</label>
+                <select id="fuelType" class="form-select">
+                  <option value="MDO">Marine Diesel Oil (MDO)</option>
+                  <option value="HFO">Heavy Fuel Oil (HFO)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fuelPrice">Fuel Price <span class="unit-badge">$/ton</span></label>
+                <input id="fuelPrice" type="number" step="10" value="600" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="voyageDist">Voyage Distance <span class="unit-badge">nm</span></label>
+                <input id="voyageDist" type="number" step="10" value="500" class="form-input">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Engine Results -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header">
+            <i data-lucide="activity" class="card-header-icon"></i>
+            <h3 class="card-title">Engine &amp; Fuel Summary</h3>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <tr><th colspan="2" class="table-section-header">Engine Loading</th></tr>
+                <tr><td>Installed Power (kW)</td><td id="installedPower">&mdash;</td></tr>
+                <tr><td>Engine Load (%)</td><td id="engineLoad">&mdash;</td></tr>
+                <tr><td>Load Warning Status</td><td id="engineWarning">&mdash;</td></tr>
+                <tr><th colspan="2" class="table-section-header">Fuel &amp; Emissions</th></tr>
+                <tr><td>Fuel Consumption (kg/h)</td><td id="fuelKgh">&mdash;</td></tr>
+                <tr><td>Fuel Consumption (ton/day)</td><td id="fuelTonday">&mdash;</td></tr>
+                <tr><td>Voyage Fuel (tons)</td><td id="voyageFuel">&mdash;</td></tr>
+                <tr><td>CO&#x2082; Emissions (kg/h)</td><td id="co2Emissions">&mdash;</td></tr>
+                <tr><th colspan="2" class="table-section-header">Operating Costs</th></tr>
+                <tr><td>Daily Fuel Cost ($/day)</td><td id="dailyFuelCost">&mdash;</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Engine Charts -->
+        <div class="card-grid-3" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="droplets" class="card-header-icon"></i><h3 class="card-title">Daily Fuel vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="fcSpeedChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="activity" class="card-header-icon"></i><h3 class="card-title">Engine Load vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="loadSpeedChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="dollar-sign" class="card-header-icon"></i><h3 class="card-title">Daily Cost vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="costSpeedChart"></canvas></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION: ENVIRONMENTAL
+           ============================================================ -->
+      <section class="workspace-section" id="envSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Environmental Performance</h1>
+          <p class="section-subtitle">IMO EEXI, CII compliance, emissions &amp; sea state analysis</p>
+        </div>
+
+        <!-- EEXI / CII Inputs -->
+        <div class="collapsible-card" id="environmentalSection">
+          <div class="collapsible-header open" data-target="environmentalBody">
+            <div class="collapsible-title">
+              <i data-lucide="leaf" class="card-header-icon"></i>
+              IMO EEXI &amp; CII Inputs
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="environmentalBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="envShipType">Vessel Type</label>
+                <select id="envShipType" class="form-select">
+                  <option value="Bulk Carrier">Bulk Carrier</option>
+                  <option value="Tanker">Tanker</option>
+                  <option value="Containership">Containership</option>
+                  <option value="Passenger Ship">Passenger Ship</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envGT">Gross Tonnage (GT)</label>
+                <input id="envGT" type="number" step="100" value="8000" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envDWT">Deadweight (DWT)</label>
+                <input id="envDWT" type="number" step="100" value="10000" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envVref">Design Speed (V<sub>ref</sub>) <span class="unit-badge">kn</span></label>
+                <input id="envVref" type="number" step="0.1" value="14.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envMEPower">Main Engine Power <span class="unit-badge">kW</span></label>
+                <input id="envMEPower" type="number" step="100" value="5000" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envAEPower">Aux Engine Power <span class="unit-badge">kW</span></label>
+                <input id="envAEPower" type="number" step="10" value="500" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envAnnualDist">Annual Distance Sailed <span class="unit-badge">nm</span></label>
+                <input id="envAnnualDist" type="number" step="1000" value="30000" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="envAnnualFuel">Annual Fuel Consumption <span class="unit-badge">tons</span></label>
+                <input id="envAnnualFuel" type="number" step="100" value="3000" class="form-input">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sea State Inputs -->
+        <div class="collapsible-card" id="seaStateSection" style="margin-top:0;">
+          <div class="collapsible-header open" data-target="seaStateBody">
+            <div class="collapsible-title">
+              <i data-lucide="waves" class="card-header-icon"></i>
+              Sea State &amp; Wave Parameters
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="seaStateBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="seaState">Sea State (0&ndash;9)</label>
+                <input id="seaState" type="number" min="0" max="9" step="1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="waveHeight">Significant Wave Height (H<sub>s</sub>) <span class="unit-badge">m</span></label>
+                <input id="waveHeight" type="number" min="0" step="0.1" value="0.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="wavePeriod">Peak Wave Period (T<sub>p</sub>) <span class="unit-badge">s</span></label>
+                <input id="wavePeriod" type="number" min="0" step="0.5" value="6.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="waveDir">Mean Wave Direction <span class="unit-badge">&deg;</span></label>
+                <input id="waveDir" type="number" min="0" max="360" step="1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="encounterAngle">Encounter Angle <span class="unit-badge">&deg;</span></label>
+                <input id="encounterAngle" type="number" min="0" max="180" step="1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="waveSpectrum">Wave Spectrum</label>
+                <select id="waveSpectrum" class="form-select">
+                  <option value="Pierson-Moskowitz">Pierson-Moskowitz</option>
+                  <option value="JONSWAP">JONSWAP</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Environmental Results -->
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="bar-chart-2" class="card-header-icon"></i><h3 class="card-title">Environmental &amp; Emissions Summary</h3></div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrapper" style="border:none;border-radius:0;">
+                <table class="data-table">
+                  <tr><th colspan="2" class="table-section-header">IMO EEXI Status</th></tr>
+                  <tr><td>Attained EEXI</td><td id="attainedEEXI">&mdash;</td></tr>
+                  <tr><td>Required EEXI</td><td id="requiredEEXI">&mdash;</td></tr>
+                  <tr><td>EEXI Compliance</td><td id="eexiStatus">&mdash;</td></tr>
+                  <tr><th colspan="2" class="table-section-header">IMO CII Status (2026)</th></tr>
+                  <tr><td>Attained CII</td><td id="attainedCII">&mdash;</td></tr>
+                  <tr><td>Required CII</td><td id="requiredCII">&mdash;</td></tr>
+                  <tr><td>CII Rating</td><td id="ciiRating" style="font-weight:700;text-align:center;">&mdash;</td></tr>
+                  <tr><th colspan="2" class="table-section-header">Emission Breakdown (kg/h)</th></tr>
+                  <tr><td>CO&#x2082; Emissions</td><td id="envCO2">&mdash;</td></tr>
+                  <tr><td>NO&#x2093; Emissions</td><td id="envNOx">&mdash;</td></tr>
+                  <tr><td>SO&#x2093; Emissions</td><td id="envSOx">&mdash;</td></tr>
+                  <tr><td>PM Emissions</td><td id="envPM">&mdash;</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="pie-chart" class="card-header-icon"></i><h3 class="card-title">Emission Breakdown Chart</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="emissionBreakdownChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- CII Rating Guide -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="star" class="card-header-icon"></i><h3 class="card-title">CII Rating Guide</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <tr><th>Rating</th><th>Meaning</th><th>Operational Status</th></tr>
+                <tr class="cii-a"><td>A</td><td>Major Superior Performance</td><td>Excellent environmental performance.</td></tr>
+                <tr class="cii-b"><td>B</td><td>Minor Superior Performance</td><td>Better than IMO requirements.</td></tr>
+                <tr class="cii-c"><td>C</td><td>Moderate Performance</td><td>Fully compliant with IMO requirements.</td></tr>
+                <tr class="cii-d"><td>D</td><td>Minor Inferior Performance</td><td>Below required efficiency. Improvement recommended.</td></tr>
+                <tr class="cii-e"><td>E</td><td>Inferior Performance</td><td>Non-compliant. Corrective action plan required.</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wave Resistance Charts -->
+        <div class="card-grid-3" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="waves" class="card-header-icon"></i><h3 class="card-title">Raw vs Wave Height</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="rawHeightChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="wind" class="card-header-icon"></i><h3 class="card-title">Speed Loss vs Wave Height</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="speedLossHeightChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="zap" class="card-header-icon"></i><h3 class="card-title">Power vs Sea State</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="powerSeaStateChart"></canvas></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION: VOYAGE ANALYSIS
+           ============================================================ -->
+      <section class="workspace-section" id="voyageSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Voyage Analysis</h1>
+          <p class="section-subtitle">Voyage performance, fuel, cost, and emissions estimation</p>
+        </div>
+
+        <div class="collapsible-card" id="voyageSection">
+          <div class="collapsible-header open" data-target="voyageBody">
+            <div class="collapsible-title">
+              <i data-lucide="navigation" class="card-header-icon"></i>
+              Voyage Parameters
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="voyageBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="voyageDistInput">Voyage Distance <span class="unit-badge">nm</span></label>
+                <input id="voyageDistInput" type="number" min="1" step="10" value="1000" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="voyageSpeed">Average Speed <span class="unit-badge">kn</span></label>
+                <input id="voyageSpeed" type="number" min="1" step="0.5" value="15.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="currentSpeed">Current Speed <span class="unit-badge">kn</span></label>
+                <input id="currentSpeed" type="number" step="0.1" value="0.0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="currentDir">Current Direction <span class="unit-badge">&deg; rel. course</span></label>
+                <input id="currentDir" type="number" step="1" value="0" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="airTemp">Air Temperature <span class="unit-badge">&deg;C</span></label>
+                <input id="airTemp" type="number" step="1" value="15" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="waterTemp">Water Temperature <span class="unit-badge">&deg;C</span></label>
+                <input id="waterTemp" type="number" step="1" value="15" class="form-input">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" id="exportVoyageCsvBtn" type="button">
+                <i data-lucide="download" style="width:15px;height:15px;"></i>
+                Export Voyage CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voyage Results -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="navigation" class="card-header-icon"></i><h3 class="card-title">Voyage Performance Summary</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <tr><th colspan="2" class="table-section-header">Voyage Summary</th></tr>
+                <tr><td>Voyage Time (hours)</td><td id="voyTimeResult">&mdash;</td></tr>
+                <tr><td>Speed Over Ground SOG (kn)</td><td id="voySogResult">&mdash;</td></tr>
+                <tr><td>Sea Margin (%)</td><td id="voySeaMargin">&mdash;</td></tr>
+                <tr><td>Weather Margin (%)</td><td id="voyWeatherMargin">&mdash;</td></tr>
+                <tr><th colspan="2" class="table-section-header">Fuel &amp; Cost</th></tr>
+                <tr><td>Fuel Consumption (tons)</td><td id="voyFuelResult">&mdash;</td></tr>
+                <tr><td>Total Fuel Cost ($)</td><td id="voyCostResult">&mdash;</td></tr>
+                <tr><th colspan="2" class="table-section-header">Voyage Emissions (tons)</th></tr>
+                <tr><td>CO&#x2082; Emissions</td><td id="voyCO2">&mdash;</td></tr>
+                <tr><td>NO&#x2093; Emissions</td><td id="voyNOx">&mdash;</td></tr>
+                <tr><td>SO&#x2093; Emissions</td><td id="voySOx">&mdash;</td></tr>
+                <tr><td>PM Emissions</td><td id="voyPM">&mdash;</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voyage Charts -->
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="droplets" class="card-header-icon"></i><h3 class="card-title">Fuel vs Distance</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="voyFuelChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="clock" class="card-header-icon"></i><h3 class="card-title">Voyage Time vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="voyTimeChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="dollar-sign" class="card-header-icon"></i><h3 class="card-title">Cost vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="voyCostChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="cloud" class="card-header-icon"></i><h3 class="card-title">CO&#x2082; vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="voyEmissionsChart"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: PERFORMANCE CURVES
+           ============================================================ -->
+      <section class="workspace-section" id="performanceSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Performance Curves</h1>
+          <p class="section-subtitle">Speed&ndash;resistance, power, fuel &amp; emission speed curves</p>
+        </div>
+
+        <div class="collapsible-card" id="performanceSection">
+          <div class="collapsible-header open" data-target="performanceBody">
+            <div class="collapsible-title">
+              <i data-lucide="activity" class="card-header-icon"></i>
+              Speed Curve Parameters
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="performanceBody">
+            <div class="form-grid form-grid-4">
+              <div class="form-group">
+                <label class="form-label" for="curveStart">Start Speed <span class="unit-badge">kn</span></label>
+                <input id="curveStart" type="number" step="0.5" value="5" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="curveEnd">End Speed <span class="unit-badge">kn</span></label>
+                <input id="curveEnd" type="number" step="0.5" value="20" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="curveStep">Increment <span class="unit-badge">kn</span></label>
+                <input id="curveStep" type="number" step="0.1" value="1" class="form-input">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="generateCurvesBtn" type="button">
+                <i data-lucide="play-circle" style="width:15px;height:15px;"></i>
+                Generate Curves
+              </button>
+              <button class="btn btn-secondary" id="exportCsvBtn" type="button">
+                <i data-lucide="download" style="width:15px;height:15px;"></i>
+                Export to CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="trending-up" class="card-header-icon"></i><h3 class="card-title">Total Resistance vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="rtCurveChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="zap" class="card-header-icon"></i><h3 class="card-title">Power vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="peCurveChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="bar-chart-3" class="card-header-icon"></i><h3 class="card-title">Resistance Breakdown vs Speed</h3></div>
+          <div class="card-body chart-wrapper"><canvas id="breakdownCurveChart"></canvas></div>
+        </div>
+
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="cloud" class="card-header-icon"></i><h3 class="card-title">CO&#x2082; vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="co2SpeedChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="star" class="card-header-icon"></i><h3 class="card-title">CII Trend vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="ciiTrendChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Speed Curve Table -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="table-2" class="card-header-icon"></i><h3 class="card-title">Speed Curve Results Table</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table id="curveTable" class="data-table">
+                <thead>
+                  <tr>
+                    <th>Speed (kn)</th>
+                    <th>Rt (kN)</th>
+                    <th>PE (kW)</th>
+                    <th>PD (kW)</th>
+                    <th>PB (kW)</th>
+                  </tr>
+                </thead>
+                <tbody id="curveTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: HULL OPTIMIZATION
+           ============================================================ -->
+      <section class="workspace-section" id="optimizationSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Hull Optimization</h1>
+          <p class="section-subtitle">Parametric hull form design exploration &amp; optimization</p>
+        </div>
+
+        <div class="collapsible-card" id="optimizationInputsSection">
+          <div class="collapsible-header open" data-target="optimizationBody">
+            <div class="collapsible-title">
+              <i data-lucide="target" class="card-header-icon"></i>
+              Optimization Bounds
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="optimizationBody">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">LWL <span class="unit-badge">m</span> &mdash; Min / Max</label>
+                <div class="input-pair">
+                  <input id="optMinLwl" type="number" value="80" class="form-input" placeholder="Min">
+                  <input id="optMaxLwl" type="number" value="120" class="form-input" placeholder="Max">
                 </div>
-
-            </section>
-
-            <!-- Appendages Section -->
-
-            <section id="appendagesSection">
-
-                <div class="card">
-
-                    <h2>Manage Appendages</h2>
-
-                    <div class="form-grid">
-
-                        <label>Appendage Type</label>
-                        <select id="appType">
-                            <option value="Rudder behind Stern,1.40">Rudder behind Stern (1+k2 = 1.40)</option>
-                            <option value="Bilge Keels,1.40">Bilge Keels (1+k2 = 1.40)</option>
-                            <option value="Rudder behind Skeg,1.70">Rudder behind Skeg (1+k2 = 1.70)</option>
-                            <option value="Skeg,1.80">Skeg (1+k2 = 1.80)</option>
-                            <option value="Hull Bossings,2.00">Hull Bossings (1+k2 = 2.00)</option>
-                            <option value="Stabilizer Fins,2.80">Stabilizer Fins (1+k2 = 2.80)</option>
-                            <option value="Shafts,3.00">Shafts (1+k2 = 3.00)</option>
-                            <option value="Shaft Brackets,3.00">Shaft Brackets (1+k2 = 3.00)</option>
-                        </select>
-
-                        <label>Wetted Area (m²)</label>
-                        <input id="appArea" type="number" step="0.01" value="0">
-
-                        <label>Form Factor (1+k₂)</label>
-                        <input id="appK2" type="number" step="0.01" value="1.40">
-
-                        <button id="addAppBtn" type="button">Add Appendage</button>
-
-                    </div>
-
-                    <table id="appTable" style="margin-top: 15px; width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Wetted Area (m²)</th>
-                                <th>1+k₂</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="appTableBody">
-                        </tbody>
-                    </table>
-
+              </div>
+              <div class="form-group">
+                <label class="form-label">Beam <span class="unit-badge">m</span> &mdash; Min / Max</label>
+                <div class="input-pair">
+                  <input id="optMinBeam" type="number" value="12" class="form-input" placeholder="Min">
+                  <input id="optMaxBeam" type="number" value="18" class="form-input" placeholder="Max">
                 </div>
-
-            </section>
-
-            <!-- Environment Section -->
-
-            <section id="environmentSection">
-
-                <div class="card">
-
-                    <h2>Environment Details</h2>
-
-                    <div class="form-grid">
-
-                        <label>Air Density (kg/m³)</label>
-                        <input id="rhoAir" type="number" step="0.001" value="1.225">
-
-                        <label>Wind Speed (knots)</label>
-                        <input id="windSpeed" type="number" step="0.1" value="0">
-
-                        <label>Wind Direction (° from bow)</label>
-                        <input id="windDir" type="number" step="1" value="0">
-
-                        <label>Projected Frontal Area (Av) (m²)</label>
-                        <input id="av" type="number" step="0.1" value="0">
-
-                        <label>Drag Coefficient (Cd)</label>
-                        <input id="cdAir" type="number" step="0.01" value="0.8">
-
-                    </div>
-
+              </div>
+              <div class="form-group">
+                <label class="form-label">Draft <span class="unit-badge">m</span> &mdash; Min / Max</label>
+                <div class="input-pair">
+                  <input id="optMinDraft" type="number" value="4.5" class="form-input" placeholder="Min">
+                  <input id="optMaxDraft" type="number" value="6.5" class="form-input" placeholder="Max">
                 </div>
-
-            </section>
-
-            <!-- Propeller Section -->
-
-            <section id="propellerSection">
-
-                <div class="card">
-
-                    <h2>Propeller Selection</h2>
-
-                    <div class="form-grid">
-
-                        <label>Number of Propellers</label>
-                        <input id="numPropellers" type="number" value="1" min="1" step="1">
-
-                        <label>Propeller Diameter (m)</label>
-                        <input id="propDiameter" type="number" step="0.05" value="4.0">
-
-                        <label>Pitch Ratio (P/D)</label>
-                        <input id="propPitch" type="number" step="0.01" value="1.0">
-
-                        <label>Expanded Area Ratio (EAR)</label>
-                        <input id="propEAR" type="number" step="0.05" value="0.55">
-
-                        <label>Number of Blades</label>
-                        <input id="propBlades" type="number" value="4" min="2" step="1">
-
-                        <label>Shaft RPM</label>
-                        <input id="propRPM" type="number" step="1" value="120">
-
-                        <label>Wake Fraction (w)</label>
-                        <input id="wakeFraction" type="number" step="0.01" value="0.25">
-
-                        <label>Thrust Deduction (t)</label>
-                        <input id="thrustDeduction" type="number" step="0.01" value="0.18">
-
-                        <label>Relative Rotative Efficiency (ηR)</label>
-                        <input id="rotativeEfficiency" type="number" step="0.01" value="1.0">
-
-                    </div>
-
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cb &mdash; Min / Max</label>
+                <div class="input-pair">
+                  <input id="optMinCb" type="number" step="0.01" value="0.65" class="form-input" placeholder="Min">
+                  <input id="optMaxCb" type="number" step="0.01" value="0.75" class="form-input" placeholder="Max">
                 </div>
-
-            </section>
-
-            <!-- Results -->
-
-            <section id="resultsSection">
-
-                <div class="card">
-
-                    <h2>Resistance Summary</h2>
-
-                    <table id="resultsTable">
-
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Value</th>
-                        </tr>
-
-                        <tr>
-                            <td>Reynolds Number</td>
-                            <td id="reResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Froude Number</td>
-                            <td id="fnResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>ITTC Friction Coefficient (Cf)</td>
-                            <td id="cfResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Friction Resistance (kN)</td>
-                            <td id="rfResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Wetted Surface (m²)</td>
-                            <td id="sResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Prismatic Coefficient (Cp)</td>
-                            <td id="cpResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Form Factor (1+k₁)</td>
-                            <td id="k1Result">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Viscous Resistance (kN)</td>
-                            <td id="rvResult">-</td>
-                        </tr>
-
-                        <tr>
-                             <td>Wave Resistance (kN)</td>
-                             <td id="rwResult">-</td>
-                        </tr>
-
-                        <tr>
-                             <td>Bulb Resistance (kN)</td>
-                             <td id="rbResult">-</td>
-                        </tr>
-
-                        <tr>
-                             <td>Transom Resistance (kN)</td>
-                             <td id="rtrResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Air Resistance (kN)</td>
-                            <td id="raResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Appendage Resistance (kN)</td>
-                            <td id="rappResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Correlation Allowance (kN)</td>
-                            <td id="caResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td><strong>Total Resistance (kN)</strong></td>
-                            <td id="rtResult"><strong>-</strong></td>
-                        </tr>
-
-                        <tr>
-                            <td><strong>Effective Power (kW)</strong></td>
-                            <td id="peResult"><strong>-</strong></td>
-                        </tr>
-
-                        <tr>
-                            <td>Hull Efficiency (ηH)</td>
-                            <td id="etaHResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Propeller Efficiency (ηO)</td>
-                            <td id="etaOResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Delivered Power (kW)</td>
-                            <td id="pdResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Holtrop c₇</td>
-                            <td id="c7Result">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Name</td>
-                            <td id="resultId">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Brake Power (kW)</td>
-                            <td id="pbResult">-</td>
-                        </tr>
-
-                        <tr>
-                            <th colspan="2" style="background-color: #f5f5f5; font-weight: bold; text-align: left; padding: 8px;">Propeller Characteristics</th>
-                        </tr>
-                        <tr>
-                            <td>Advance Speed (Va) (m/s)</td>
-                            <td id="propVaResult">-</td>
-                        </tr>
-                        <tr>
-                            <td>Advance Coefficient (J)</td>
-                            <td id="propJResult">-</td>
-                        </tr>
-                        <tr>
-                            <td>Thrust Coefficient (KT)</td>
-                            <td id="propKTResult">-</td>
-                        </tr>
-                        <tr>
-                            <td>Torque Coefficient (10*KQ)</td>
-                            <td id="prop10KQResult">-</td>
-                        </tr>
-                        <tr>
-                            <td>Thrust Required (kN)</td>
-                            <td id="propThrustResult">-</td>
-                        </tr>
-                        <tr>
-                            <td>Torque (kNm)</td>
-                            <td id="propTorqueResult">-</td>
-                        </tr>
-                        <tr>
-                            <td>Open Water Efficiency (ηO)</td>
-                            <td id="propEtaOResult2">-</td>
-                        </tr>
-                        <tr>
-                            <td>Propulsive Coefficient (PC)</td>
-                            <td id="propPCResult">-</td>
-                        </tr>
-
-                    </table>
-
-                </div>
-
-                <div class="card">
-
-                    <h2>Hull Coefficients</h2>
-
-                    <table>
-
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Value</th>
-                        </tr>
-
-                        <tr>
-                            <td>Prismatic Coefficient (Cp)</td>
-                            <td id="cpCoeff">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>L/B Ratio</td>
-                            <td id="lbCoeff">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>B/T Ratio</td>
-                            <td id="btCoeff">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>L/T Ratio</td>
-                            <td id="ltCoeff">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Holtrop c₇</td>
-                            <td id="c7Coeff">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Holtrop c₁₅</td>
-                            <td id="c15Result">-</td>
-                        </tr>
-
-                        <tr>
-                            <td>Holtrop c₁₆</td>
-                            <td id="c16Result">-</td>
-                        </tr>
-
-                    </table>
-
-                </div>
-
-            </section>
-
-            <!-- Charts -->
-
-            <section id="chartsSection">
-
-                <div class="card">
-                    <h2>Charts</h2>
-
-                    <canvas id="resistanceChart"></canvas>
-                    <h3 style="margin-top: 20px;">Propeller Open Water Diagram</h3>
-                    <canvas id="openWaterChart"></canvas>
-                </div>
-
-            </section>
-
-            <!-- Performance Section -->
-
-            <section id="performanceSection">
-
-                <div class="card">
-
-                    <h2>Performance Analysis (Speed Curves)</h2>
-
-                    <div class="form-grid">
-
-                        <label>Start Speed (knots)</label>
-                        <input id="curveStart" type="number" step="0.5" value="5">
-
-                        <label>End Speed (knots)</label>
-                        <input id="curveEnd" type="number" step="0.5" value="20">
-
-                        <label>Increment (knots)</label>
-                        <input id="curveStep" type="number" step="0.1" value="1">
-
-                        <button id="generateCurvesBtn" type="button">Generate Curves</button>
-                        <button id="exportCsvBtn" type="button">Export to CSV</button>
-
-                    </div>
-
-                    <div style="margin-top: 20px; max-height: 300px;">
-                        <canvas id="rtCurveChart"></canvas>
-                    </div>
-
-                    <div style="margin-top: 20px; max-height: 300px;">
-                        <canvas id="peCurveChart"></canvas>
-                    </div>
-
-                    <div style="margin-top: 20px; max-height: 300px;">
-                        <canvas id="breakdownCurveChart"></canvas>
-                    </div>
-
-                    <h3 style="margin-top: 25px;">Speed Curve Results Table</h3>
-
-                    <table id="curveTable" style="margin-top: 15px; width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Speed (kn)</th>
-                                <th>Rt (kN)</th>
-                                <th>PE (kW)</th>
-                                <th>PD (kW)</th>
-                                <th>PB (kW)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="curveTableBody">
-                        </tbody>
-                    </table>
-
-                </div>
-
-            </section>
-
-            <!-- Design Comparison Section -->
-
-            <section id="comparisonSection">
-
-                <div class="card">
-
-                    <h2>Design Comparison</h2>
-
-                    <div class="form-grid">
-
-                        <label>New Case Name</label>
-                        <input id="comparisonCaseName" type="text" placeholder="Design Case A">
-
-                        <button id="saveCaseBtn" type="button">Save Current Case</button>
-
-                    </div>
-
-                    <div style="margin-top: 15px;">
-
-                        <h3>Saved Design Cases</h3>
-
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Case Name</th>
-                                    <th>LWL (m)</th>
-                                    <th>Draft (m)</th>
-                                    <th>Speed (kn)</th>
-                                    <th>Rt (kN)</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="savedCasesListBody">
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                    <div style="margin-top: 20px;">
-
-                        <button id="compareCasesBtn" type="button">Compare Selected Cases</button>
-                        <button id="exportCompPdfBtn" type="button">Export PDF Comparison</button>
-                        <button id="exportCompCsvBtn" type="button">Export CSV Comparison</button>
-
-                    </div>
-
-                    <div style="margin-top: 25px;">
-
-                        <h3>Comparison Matrix</h3>
-
-                        <table id="comparisonMatrixTable" style="width: 100%; border-collapse: collapse;">
-                        </table>
-
-                    </div>
-
-                    <div style="margin-top: 25px; max-height: 300px;">
-                        <canvas id="compRtChart"></canvas>
-                    </div>
-
-                    <div style="margin-top: 25px; max-height: 300px;">
-                        <canvas id="compPeChart"></canvas>
-                    </div>
-
-                    <div style="margin-top: 25px; max-height: 300px;">
-                        <canvas id="compBreakdownChart"></canvas>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- Applicability -->
-
-            <section id="applicabilitySection">
-
-                <div class="card">
-
-                    <h2>Applicability Check</h2>
-
-                    <ul id="validationList"></ul>
-
-                </div>
-
-            </section>
-
-        </section>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="optSteps">Steps per Variable</label>
+                <input id="optSteps" type="number" value="3" min="2" max="6" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="optMaxCases">Max Cases Limit</label>
+                <input id="optMaxCases" type="number" value="500" min="10" max="1000" class="form-input">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="runOptBtn" type="button">
+                <i data-lucide="play-circle" style="width:15px;height:15px;"></i>
+                Run Optimization
+              </button>
+              <button class="btn btn-secondary" id="exportOptCsvBtn" type="button">
+                <i data-lucide="download" style="width:15px;height:15px;"></i>
+                Export Results CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optimization Summary -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="trophy" class="card-header-icon"></i><h3 class="card-title">Best Designs</h3></div>
+          <div class="card-body">
+            <div class="summary-row">
+              <div class="summary-item">
+                <span class="summary-label">Lowest Resistance</span>
+                <span class="summary-value" id="optBestRtName">&mdash;</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Lowest Power</span>
+                <span class="summary-value" id="optBestPowerName">&mdash;</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Lowest Fuel</span>
+                <span class="summary-value" id="optBestFuelName">&mdash;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="list-ordered" class="card-header-icon"></i><h3 class="card-title">Top 10 Ranked Designs (by Resistance)</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Case ID</th><th>LWL (m)</th><th>Beam (m)</th><th>Draft (m)</th>
+                    <th>Cb</th><th>Rt (kN)</th><th>PE (kW)</th><th>Fuel (t/day)</th><th>Warning</th>
+                  </tr>
+                </thead>
+                <tbody id="optResultsListBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="scatter-chart" class="card-header-icon"></i><h3 class="card-title">Resistance vs Cb</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="optResChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="scatter-chart" class="card-header-icon"></i><h3 class="card-title">Power vs L/B</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="optPowerChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="scatter-chart" class="card-header-icon"></i><h3 class="card-title">Fuel vs Speed</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="optFuelChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="target" class="card-header-icon"></i><h3 class="card-title">Pareto Front (Rt vs Fuel)</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="optParetoChart"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: BATCH ANALYSIS
+           ============================================================ -->
+      <section class="workspace-section" id="batchSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Batch Analysis</h1>
+          <p class="section-subtitle">Multi-vessel analysis via CSV or Excel file import</p>
+        </div>
+
+        <div class="collapsible-card" id="batchSection">
+          <div class="collapsible-header open" data-target="batchBody">
+            <div class="collapsible-title">
+              <i data-lucide="upload-cloud" class="card-header-icon"></i>
+              Import Vessel Data
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="batchBody">
+            <div class="upload-dropzone">
+              <i data-lucide="upload-cloud" style="width:30px;height:30px;color:#9CA3AF;"></i>
+              <p>Drop CSV or Excel file here, or click to browse</p>
+              <input id="batchFileImport" type="file" accept=".csv, .xlsx, .xls"
+                style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;">
+            </div>
+
+            <div id="batchProgressContainer" style="display:none; margin-top:16px;">
+              <div class="progress-bar-wrapper">
+                <progress id="batchProgressBar" value="0" max="100" class="progress-bar"></progress>
+                <p id="batchProgressLabel" class="progress-label">Ready to process...</p>
+              </div>
+              <button id="cancelBatchBtn" type="button" class="btn btn-danger" style="margin-top:10px;">
+                <i data-lucide="x-circle" style="width:15px;height:15px;"></i>
+                Cancel Calculation
+              </button>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-secondary" id="exportBatchCsvBtn" type="button">
+                <i data-lucide="download" style="width:15px;height:15px;"></i>
+                Export Batch CSV
+              </button>
+              <button class="btn btn-secondary" id="exportBatchExcelBtn" type="button">
+                <i data-lucide="file-spreadsheet" style="width:15px;height:15px;"></i>
+                Export Batch Excel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Results -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="trophy" class="card-header-icon"></i><h3 class="card-title">Top 10 Vessel Configurations</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th><th>Vessel Name</th><th>LWL (m)</th><th>Beam (m)</th><th>Draft (m)</th>
+                    <th>Cb</th><th>Rt (kN)</th><th>PE (kW)</th><th>Fuel (t/day)</th><th>CII Rating</th>
+                  </tr>
+                </thead>
+                <tbody id="batchResultsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header">
+            <i data-lucide="alert-triangle" class="card-header-icon" style="color:var(--color-danger);"></i>
+            <h3 class="card-title" style="color:var(--color-danger);">Failed Validation &amp; Error Logs</h3>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Row</th><th>Vessel / Row Reference</th><th>Validation Error Details</th></tr>
+                </thead>
+                <tbody id="batchErrorsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Charts -->
+        <div class="card-grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="bar-chart-3" class="card-header-icon"></i><h3 class="card-title">Resistance Comparison</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="batchRtChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="zap" class="card-header-icon"></i><h3 class="card-title">Power Comparison</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="batchPeChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="droplets" class="card-header-icon"></i><h3 class="card-title">Fuel Comparison</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="batchFuelChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="cloud" class="card-header-icon"></i><h3 class="card-title">Emissions Comparison</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="batchEmissionsChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="bar-chart-2" class="card-header-icon"></i><h3 class="card-title">EEXI Comparison</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="batchEexiChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="pie-chart" class="card-header-icon"></i><h3 class="card-title">CII Rating Distribution</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="batchCiiChart"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: REPORTS / COMPARISON
+           ============================================================ -->
+      <section class="workspace-section" id="reportsSectionNav">
+        <div class="section-header">
+          <h1 class="section-title">Design Comparison &amp; Reports</h1>
+          <p class="section-subtitle">Save design cases, compare results, and generate reports</p>
+        </div>
+
+        <div class="collapsible-card" id="comparisonSection">
+          <div class="collapsible-header open" data-target="comparisonBody">
+            <div class="collapsible-title">
+              <i data-lucide="git-compare" class="card-header-icon"></i>
+              Save &amp; Compare Design Cases
+            </div>
+            <i data-lucide="chevron-down" class="chevron-icon"></i>
+          </div>
+          <div class="collapsible-body expanded" id="comparisonBody">
+            <div class="form-grid form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="comparisonCaseName">Case Name</label>
+                <input id="comparisonCaseName" type="text" placeholder="Design Case A" class="form-input">
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-primary" id="saveCaseBtn" type="button" style="margin-top:auto;">
+                  <i data-lucide="bookmark-plus" style="width:15px;height:15px;"></i>
+                  Save Current Case
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Cases -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header">
+            <i data-lucide="folder" class="card-header-icon"></i>
+            <h3 class="card-title">Saved Design Cases</h3>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table class="data-table" style="width:100%;">
+                <thead>
+                  <tr>
+                    <th>Case Name</th><th>LWL (m)</th><th>Draft (m)</th><th>Speed (kn)</th><th>Rt (kN)</th><th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="savedCasesListBody"></tbody>
+              </table>
+            </div>
+            <div class="form-actions" style="padding:0 18px 16px;">
+              <button class="btn btn-primary" id="compareCasesBtn" type="button">
+                <i data-lucide="git-compare" style="width:15px;height:15px;"></i>
+                Compare Selected
+              </button>
+              <button class="btn btn-secondary" id="exportCompPdfBtn" type="button">
+                <i data-lucide="file-down" style="width:15px;height:15px;"></i>
+                Export PDF
+              </button>
+              <button class="btn btn-secondary" id="exportCompCsvBtn" type="button">
+                <i data-lucide="download" style="width:15px;height:15px;"></i>
+                Export CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Matrix -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header"><i data-lucide="table-2" class="card-header-icon"></i><h3 class="card-title">Comparison Matrix</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrapper" style="border:none;border-radius:0;">
+              <table id="comparisonMatrixTable" class="data-table" style="width:100%;"></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Charts -->
+        <div class="card-grid-3" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><i data-lucide="trending-up" class="card-header-icon"></i><h3 class="card-title">Resistance Curves</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="compRtChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="zap" class="card-header-icon"></i><h3 class="card-title">Power Curves</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="compPeChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><i data-lucide="bar-chart-3" class="card-header-icon"></i><h3 class="card-title">Resistance Breakdown</h3></div>
+            <div class="card-body chart-wrapper"><canvas id="compBreakdownChart"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: SETTINGS
+           ============================================================ -->
+      <section class="workspace-section" id="settingsSection">
+        <div class="section-header">
+          <h1 class="section-title">Settings</h1>
+          <p class="section-subtitle">Application preferences and configuration</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><i data-lucide="settings-2" class="card-header-icon"></i><h3 class="card-title">Appearance</h3></div>
+          <div class="card-body">
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Dark Mode</div>
+                <div class="setting-description">Toggle between light and dark interface themes</div>
+              </div>
+              <button class="toggle-btn" id="darkModeToggleSettings">
+                <span class="toggle-knob"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
     </main>
+  </div>
+</div>
 
-    <footer>
-        <p>© 2026 Primalisometric Consultancy</p>
-    </footer>
+<!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/wettedSurface.js"></script>
+<script src="js/hullCoefficients.js"></script>
+<script src="js/formFactor.js"></script>
+<script src="js/friction.js"></script>
+<script src="js/holtropWave.js"></script>
+<script src="js/appendageResistance.js"></script>
+<script src="js/airResistance.js"></script>
+<script src="js/correlationAllowance.js"></script>
+<script src="js/effectivePower.js"></script>
+<script src="js/propulsion.js"></script>
+<script src="js/totalResistance.js"></script>
+<script src="js/holtropCoefficients.js"></script>
+<script src="js/holtropC15.js"></script>
+<script src="js/holtropC16.js"></script>
+<script src="js/bulbResistance.js"></script>
+<script src="js/transomResistance.js"></script>
+<script src="js/applicability.js"></script>
+<script src="js/reportGenerator.js"></script>
+<script src="js/projectManager.js"></script>
+<script src="js/performanceCurves.js"></script>
+<script src="js/designComparison.js"></script>
+<script src="js/wageningenBSeries.js"></script>
+<script src="js/engineSelection.js"></script>
+<script src="js/eexi.js"></script>
+<script src="js/cii.js"></script>
+<script src="js/emissions.js"></script>
+<script src="js/addedResistance.js"></script>
+<script src="js/weatherCorrection.js"></script>
+<script src="js/voyagePerformance.js"></script>
+<script src="js/parametricStudy.js"></script>
+<script src="js/hullOptimization.js"></script>
+<script src="js/fileImporter.js"></script>
+<script src="js/comparisonEngine.js"></script>
+<script src="js/batchProcessor.js"></script>
+<script src="js/propellerSelection.js"></script>
+<script src="js/openWater.js"></script>
 
-    <script src="js/wettedSurface.js"></script>
-    <script src="js/hullCoefficients.js"></script>
-    <script src="js/formFactor.js"></script>
-    <script src="js/friction.js"></script>
-    <script src="js/holtropWave.js"></script>
-    <script src="js/appendageResistance.js"></script>
-    <script src="js/airResistance.js"></script>
-    <script src="js/correlationAllowance.js"></script>
-    <script src="js/effectivePower.js"></script>
-    <script src="js/propulsion.js"></script>
-    <script src="js/totalResistance.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- THIS MUST EXIST -->
-    <script src="js/holtropCoefficients.js"></script>
-    <script src="js/holtropC15.js"></script>
-    <script src="js/holtropC16.js"></script>
-    <script src="js/bulbResistance.js"></script>
-    <script src="js/transomResistance.js"></script>
-    <script src="js/applicability.js"></script>
-    <script src="js/reportGenerator.js"></script>
-    <script src="js/projectManager.js"></script>
-    <script src="js/performanceCurves.js"></script>
-    <script src="js/designComparison.js"></script>
-    <script src="js/propellerSelection.js"></script>
-    <script src="js/openWater.js"></script>
-        
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <script src="js/main.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/units.js"></script>
+<script src="js/main.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/units.js"></script>
 
 </body>
-
 </html>

@@ -1,0 +1,17 @@
+/* =============================================================
+   report.css — PDF / Print Report Styles
+   ============================================================= */
+
+@media print {
+  .topbar, .sidebar { display: none !important; }
+  .workspace {
+    padding: 0;
+    overflow: visible;
+    height: auto;
+  }
+  .workspace-section { display: block !important; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+  body { overflow: visible; height: auto; }
+  .app-container { height: auto; overflow: visible; }
+  .app-body { overflow: visible; }
+}
